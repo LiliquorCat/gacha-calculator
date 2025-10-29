@@ -912,85 +912,26 @@
             color: white;
         }
 
-        /* 移动端适配 */
+                /* 移动端优先的响应式设计 */
         @media (max-width: 768px) {
             .gacha-calculator {
-                padding: 10px;
+                padding: 8px;
+                min-height: 100vh;
+                background: #f5f7fa;
             }
-            
+
             .calculator-layout {
-                grid-template-columns: 1fr;
-                gap: 15px;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
             }
-            
+
+            .left-panel {
+                order: -1; /* 总计模块移到最上面 */
+            }
+
             .sticky-panel {
                 position: static;
-            }
-            
-            .card {
-                padding: 15px;
-            }
-            
-            .resource-vertical {
-                gap: 10px;
-            }
-            
-            .resource-input-vertical {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 8px;
-            }
-            
-            .resource-input-vertical label {
-                min-width: auto;
-            }
-            
-            .resource-input-vertical input {
-                width: 100%;
-                max-width: 120px;
-            }
-            
-            .skin-reserve-row {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
-            
-            .dark-zone-switches {
-                flex-direction: column;
-                gap: 8px;
-                width: 100%;
-                margin-top: 8px;
-            }
-            
-            .target-buttons {
-                grid-template-columns: 1fr;
-            }
-            
-            .rating-buttons {
-                grid-template-columns: 1fr;
-            }
-            
-            .target-btn, .rating-btn {
-                font-size: 12px;
-                padding: 8px 6px;
-            }
-
-            .time-options {
-                grid-template-columns: 1fr;
-            }
-            
-            .summary-chart-container {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-
-            .chart-wrapper {
-                height: 180px;
-            }
-
-            .total-summary-grid {
-                grid-template-columns: 1fr;
-                gap: 10px;
             }
 
             .sticky-total-mobile {
@@ -998,30 +939,473 @@
                 top: 0;
                 z-index: 1000;
                 background: white;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                margin-bottom: 15px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                margin: -8px -8px 12px -8px;
+                border-radius: 0;
+                padding: 12px 15px;
+            }
+
+            .card {
+                padding: 16px;
+                border-radius: 12px;
+                margin-bottom: 8px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            }
+
+            h1 {
+                font-size: 20px;
+                margin-bottom: 16px;
+                text-align: center;
+                padding: 0 10px;
+            }
+
+            h1 img.resource-icon {
+                width: 36px !important;
+                height: auto !important;
+            }
+
+            .section-header {
+                font-size: 16px;
+                padding: 12px 0;
+                margin-bottom: 12px;
+                user-select: none;
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            .collapse-icon {
+                font-size: 18px;
+                min-width: 20px;
+                text-align: center;
+            }
+
+            /* 资源输入优化 */
+            .resource-vertical {
+                gap: 12px;
+            }
+
+            .resource-input-vertical {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+                padding: 12px;
+                background: #f8f9fa;
+                border-radius: 8px;
+                border: 1px solid #e8ecef;
+            }
+
+            .resource-input-vertical label {
+                min-width: auto;
+                font-size: 14px;
+                font-weight: 600;
+                color: #333;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .resource-input-vertical input {
+                width: 100%;
+                max-width: none;
+                min-height: 44px;
+                padding: 12px;
+                font-size: 16px; /* 防止iOS缩放 */
+                border: 1px solid #d0d7de;
+                border-radius: 6px;
+                background: white;
+            }
+
+            /* 皮肤预留区域 */
+            .skin-reserve-row {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .skin-item.compact {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                padding: 12px;
+                background: #f8f9fa;
+                border: 1px solid #e8ecef;
+            }
+
+            .skin-item.compact .skin-info {
+                flex-direction: row;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .skin-item.compact .skin-price {
+                font-size: 14px;
+                font-weight: 600;
+            }
+
+            .skin-item.compact .skin-controls {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .skin-btn {
+                min-width: 44px;
+                min-height: 44px;
+                width: 44px;
+                height: 44px;
+                border: 1px solid #d0d7de;
+                background: white;
+                border-radius: 6px;
+                font-size: 18px;
+                font-weight: bold;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            .skin-count {
+                min-width: 50px;
+                text-align: center;
+                font-weight: 600;
+                font-size: 14px;
+            }
+
+            /* 按钮组优化 */
+            .target-buttons,
+            .rating-buttons,
+            .memory-storm-buttons,
+            .pollution-nest-buttons,
+            .cleanup-operation-buttons {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .main-story-buttons,
+            .ex-buttons {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .main-story-columns,
+            .ex-columns {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .palma-ruins-buttons {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .palma-ruins-row {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            /* 通用按钮样式 */
+            .target-btn, .rating-btn, .main-story-btn, .ex-btn,
+            .memory-storm-btn, .pollution-nest-btn, .cleanup-operation-btn,
+            .palma-ruins-btn, .character-development-btn {
+                min-height: 48px;
+                padding: 12px 10px;
+                font-size: 14px;
+                border: 2px solid #e8ecef;
+                border-radius: 8px;
+                background: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                line-height: 1.3;
+                -webkit-tap-highlight-color: transparent;
+                transition: all 0.2s ease;
+            }
+
+            .target-btn:hover, .rating-btn:hover, .main-story-btn:hover, .ex-btn:hover,
+            .memory-storm-btn:hover, .pollution-nest-btn:hover, .cleanup-operation-btn:hover,
+            .palma-ruins-btn:hover, .character-development-btn:hover {
+                border-color: #1890ff;
+                background: #f0f8ff;
+            }
+
+            .target-btn.active, .rating-btn.active, .main-story-btn.active, .ex-btn.active,
+            .memory-storm-btn.active, .pollution-nest-btn.active, .cleanup-operation-btn.active,
+            .palma-ruins-btn.active, .character-development-btn.active {
+                border-color: #1890ff;
+                background: #1890ff;
+                color: white;
+            }
+
+            /* 时间选项优化 */
+            .time-options {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .time-option {
+                padding: 16px;
+                border: 2px solid #e8ecef;
+                border-radius: 10px;
+                text-align: center;
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            .time-option.active {
+                border-color: #1890ff;
+                background: #f0f8ff;
+            }
+
+            /* 图表优化 */
+            .summary-chart-container {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .chart-wrapper {
+                height: 200px;
+                position: relative;
+            }
+
+            .chart-legend {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .legend-item {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 8px;
+                border-radius: 6px;
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            /* 总计网格优化 */
+            .total-summary-grid {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .summary-category {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 12px;
+                background: #f8f9fa;
+                border-radius: 8px;
+                border-left: 4px solid #1890ff;
+            }
+
+            .category-name {
+                font-size: 14px;
+                font-weight: 600;
+            }
+
+            .category-value {
+                font-size: 14px;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+            }
+
+            /* 子区域优化 */
+            .sub-section {
+                margin: 16px 0;
+                padding: 16px;
+                background: #f8f9fa;
+                border-radius: 10px;
+                border-left: 4px solid #1890ff;
+            }
+
+            .sub-title {
+                font-size: 15px;
+                font-weight: 600;
+                margin-bottom: 12px;
+                color: #333;
+            }
+
+            /* 开关组优化 */
+            .switch-group {
+                display: flex;
+                align-items: center;
+                margin: 12px 0;
+                padding: 8px 0;
+            }
+
+            .switch-group.small {
+                margin: 0;
+                padding: 0;
+            }
+
+            .switch {
+                min-width: 44px;
+                height: 24px;
+            }
+
+            .switch-label {
+                font-size: 14px;
+                margin-left: 8px;
+                color: #666;
+            }
+
+            /* 积累项优化 */
+            .accumulation-item {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                margin: 10px 0;
+                padding: 12px;
+                background: white;
+                border-radius: 8px;
+                border: 1px solid #e8ecef;
+            }
+
+            .item-info {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .item-title {
+                font-size: 14px;
+                font-weight: 600;
+            }
+
+            .item-value {
+                font-size: 14px;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+            }
+
+            /* 角色养成输入优化 */
+            .character-development-inputs {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .character-development-input {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                padding: 12px;
+                background: white;
+                border-radius: 8px;
+                border: 1px solid #e8ecef;
+            }
+
+            .character-development-input label {
+                min-width: auto;
+                font-size: 14px;
+                font-weight: 600;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .character-development-input input {
+                min-height: 44px;
+                padding: 12px;
+                font-size: 16px;
+                border: 1px solid #d0d7de;
+                border-radius: 6px;
+                text-align: center;
+            }
+
+            /* 无尽梦魇滑块优化 */
+            .nightmare-score {
+                padding: 16px;
+                background: white;
+                border-radius: 8px;
+                border: 1px solid #e8ecef;
+            }
+
+            .score-slider {
+                width: 100%;
+                height: 8px;
+                border-radius: 4px;
+                -webkit-appearance: none;
+                background: #e8ecef;
+            }
+
+            .score-slider::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                background: #1890ff;
+                border: 2px solid white;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            }
+
+            /* 模块开关优化 */
+            .module-switch {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-left: auto;
+            }
+
+            .module-switch-label {
+                font-size: 12px;
+                color: #666;
+                white-space: nowrap;
+            }
+
+            /* 资源图标优化 */
+            .resource-icon {
+                width: 20px;
+                height: 20px;
+            }
+
+            .resource-icon.small {
+                width: 14px;
+                height: 14px;
+            }
+
+            /* 确保文本不会溢出 */
+            .main-story-btn, .ex-btn {
+                white-space: normal;
+                word-wrap: break-word;
+                line-height: 1.3;
             }
         }
 
-        @media (max-width: 480px) {
+        /* 超小屏幕额外优化 */
+        @media (max-width: 360px) {
             .gacha-calculator {
-                padding: 5px;
+                padding: 6px;
             }
             
             .card {
-                padding: 10px;
+                padding: 12px;
             }
             
-            .summary-category {
-                padding: 8px;
+            h1 {
+                font-size: 18px;
             }
             
-            .category-name {
-                font-size: 12px;
+            .section-header {
+                font-size: 15px;
             }
             
-            .category-value {
-                font-size: 12px;
+            .target-btn, .rating-btn, .main-story-btn, .ex-btn,
+            .memory-storm-btn, .pollution-nest-btn, .cleanup-operation-btn,
+            .palma-ruins-btn, .character-development-btn {
+                font-size: 13px;
+                padding: 10px 8px;
             }
         }
 
