@@ -3,52 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>海拉的钱包 - 抽卡资源计算器</title>
+    <title>海拉的钱包</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* 基础样式 */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        
-        body {
-            font-family: 'Microsoft YaHei', Arial, sans-serif;
-            background: #f5f7fa;
-            color: #333;
-            line-height: 1.6;
-        }
-        
         .gacha-calculator {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: #f5f7fa;
             min-height: 100vh;
         }
-        
+
         .calculator-layout {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
             align-items: start;
         }
-        
+
         .left-panel, .right-panel {
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
-        
+
         .card {
             background: white;
             padding: 20px;
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            width: 100%;
         }
-        
+
         .section-header {
             display: flex;
             justify-content: space-between;
@@ -59,37 +46,33 @@
             font-size: 18px;
             user-select: none;
         }
-        
+
         .section-header:hover {
             color: #1890ff;
         }
-        
+
         .collapse-icon {
             font-weight: bold;
             font-size: 16px;
             color: #666;
         }
-        
+
         .section-content {
             margin-top: 10px;
         }
-        
+
         h1 {
             text-align: center;
             color: #333;
             margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
         }
-        
+
         h2 {
             color: #333;
             margin-bottom: 15px;
             font-size: 18px;
         }
-        
+
         .sub-section {
             margin: 20px 0;
             padding: 15px;
@@ -97,31 +80,21 @@
             border-radius: 8px;
             border-left: 4px solid #1890ff;
         }
-        
+
         .sub-title {
             color: #333;
             margin-bottom: 12px;
             font-size: 16px;
             font-weight: bold;
         }
-        
+
         /* 左侧面板固定定位 */
         .sticky-panel {
             position: sticky;
             top: 20px;
             align-self: flex-start;
-            z-index: 10;
         }
-        
-        /* 冻结顶部统计模块 */
-        .time-total-section {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: white;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
+
         /* 当前库存垂直布局 */
         .resource-vertical {
             display: flex;
@@ -129,7 +102,7 @@
             gap: 12px;
             margin-top: 10px;
         }
-        
+
         .resource-input-vertical {
             display: flex;
             align-items: center;
@@ -139,7 +112,7 @@
             border-radius: 6px;
             border: 1px solid #e1e5e9;
         }
-        
+
         .resource-input-vertical label {
             display: flex;
             align-items: center;
@@ -149,7 +122,7 @@
             min-width: 120px;
             margin-bottom: 0;
         }
-        
+
         .resource-input-vertical input {
             padding: 8px;
             border: 1px solid #ddd;
@@ -157,14 +130,14 @@
             width: 100px;
             text-align: center;
         }
-        
-        /* 皮肤预留一行显示 */
+
+        /* 皮肤预留一行显示 - 修改按键布局 */
         .skin-reserve-row {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 15px;
         }
-        
+
         .skin-item.compact {
             display: flex;
             flex-direction: column;
@@ -174,33 +147,33 @@
             border-radius: 6px;
             border: 1px solid #e1e5e9;
         }
-        
+
         .skin-item.compact .skin-info {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 5px;
         }
-        
+
         .skin-item.compact .skin-price {
             font-weight: bold;
             color: #333;
         }
-        
+
         .skin-item.compact .skin-controls {
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 10px;
         }
-        
+
         .skin-item.compact .skin-count {
             color: #1890ff;
             font-weight: bold;
             min-width: 40px;
             text-align: center;
         }
-        
+
         .skin-btn {
             width: 30px;
             height: 30px;
@@ -214,21 +187,58 @@
             align-items: center;
             justify-content: center;
         }
-        
+
         .skin-btn:hover {
             background: #f0f0f0;
         }
-        
+
         .skin-btn:active {
             background: #e0e0e0;
         }
-        
+
+        /* 角色养成按钮样式 */
+        .character-development-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .character-dev-btn {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .character-dev-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .character-dev-btn:active {
+            background: #e0e0e0;
+        }
+
+        .character-dev-count {
+            color: #1890ff;
+            font-weight: bold;
+            min-width: 40px;
+            text-align: center;
+        }
+
         /* 暗域开关组样式 */
         .dark-zone-switches {
             display: flex;
             gap: 15px;
         }
-        
+
         /* 数据间隙样式 */
         .data-gap-subsection {
             margin: 15px 0;
@@ -237,27 +247,27 @@
             border-radius: 6px;
             border: 1px solid #e1e5e9;
         }
-        
+
         .data-gap-title {
             font-size: 14px;
             font-weight: bold;
             color: #333;
             margin-bottom: 10px;
         }
-        
+
         .target-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 8px;
             margin-bottom: 10px;
         }
-        
+
         .rating-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 8px;
         }
-        
+
         .target-btn, .rating-btn {
             padding: 10px 8px;
             border: 2px solid #ddd;
@@ -272,523 +282,35 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        
+
         .target-btn:hover, .rating-btn:hover {
             border-color: #1890ff;
             background: #f0f8ff;
         }
-        
+
         .target-btn.active, .rating-btn.active {
             border-color: #1890ff;
             background: #1890ff;
             color: white;
         }
-        
-        /* 时间选项样式 */
-        .time-options {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 15px;
-        }
-        
-        .time-option {
-            padding: 15px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            text-align: center;
-            cursor: pointer;
-        }
-        
-        .time-option.active {
-            border-color: #1890ff;
-            background: #f0f8ff;
-        }
-        
-        .time-days {
-            font-size: 18px;
-            font-weight: bold;
-            color: #1890ff;
-            margin: 5px 0;
-        }
-        
-        .time-weeks {
-            font-size: 14px;
-            color: #666;
-            font-weight: normal;
-        }
-        
-        /* 开关样式 */
-        .switch-group {
-            display: flex;
-            align-items: center;
-            margin: 10px 0;
-        }
-        
-        .switch-group.small {
-            margin: 0 0 0 10px;
-        }
-        
-        .switch {
-            position: relative;
-            width: 40px;
-            height: 20px;
-        }
-        
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 20px;
-        }
-        
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 2px;
-            bottom: 2px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-        
-        input:checked + .slider {
-            background-color: #1890ff;
-        }
-        
-        input:checked + .slider:before {
-            transform: translateX(20px);
-        }
-        
-        .switch-label {
-            font-size: 12px;
-            margin-left: 5px;
-            color: #666;
-        }
-        
-        /* 积累项样式 */
-        .accumulation-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin: 8px 0;
-            padding: 8px;
-            background: #f8f9fa;
-            border-radius: 5px;
-        }
-        
-        .item-info {
-            display: flex;
-            align-items: center;
-            flex: 1;
-        }
-        
-        .item-title {
-            font-weight: bold;
-            color: #333;
-            min-width: 120px;
-        }
-        
-        .item-subtitle {
-            color: #666;
-            min-width: 80px;
-            font-size: 14px;
-        }
-        
-        .item-value {
-            font-weight: bold;
-            color: #1890ff;
-            margin-left: 10px;
-            display: flex;
-            align-items: center;
-            gap: 2px;
-        }
-        
-        /* 资源图标样式 */
-        .resource-icon {
-            width: 24px;
-            height: 24px;
-            vertical-align: middle;
-            margin: 0 2px;
-        }
-        
-        .resource-icon.small {
-            width: 16px;
-            height: 16px;
-        }
-        
-        /* 商店样式 */
-        .shop-section {
-            margin-top: 15px;
-            padding: 15px;
-            background: #e8f4fd;
-            border-radius: 8px;
-        }
-        
-        .shop-title {
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 10px;
-        }
-        
-        .certification-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .certification-btn {
-            width: 30px;
-            height: 30px;
-            border: 1px solid #ddd;
-            background: white;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .certification-btn:hover {
-            background: #f0f0f0;
-        }
-        
-        .certification-count {
-            font-weight: bold;
-            color: #ffa500;
-            min-width: 80px;
-            text-align: center;
-        }
-        
-        /* 训练按钮样式 */
-        .training-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-        
-        .training-btn {
-            padding: 12px 8px;
-            border: 2px solid #ddd;
-            background: white;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-        
-        .training-btn:hover {
-            border-color: #1890ff;
-            background: #f0f8ff;
-        }
-        
-        .training-btn.active {
-            border-color: #1890ff;
-            background: #1890ff;
-            color: white;
-        }
-        
-        /* 饼状图样式 */
-        .summary-chart-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            align-items: center;
-            margin-top: 15px;
-        }
-        
-        .chart-wrapper {
-            position: relative;
-            height: 200px;
-        }
-        
-        .chart-legend {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 5px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        .legend-item:hover {
-            background-color: #f5f5f5;
-        }
-        
-        .legend-color {
-            width: 16px;
-            height: 16px;
-            border-radius: 3px;
-        }
-        
-        .legend-text {
-            font-size: 12px;
-            color: #333;
-        }
-        
-        .chart-tooltip {
-            position: absolute;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 4px;
-            font-size: 12px;
-            pointer-events: none;
-            z-index: 1000;
-            display: none;
-        }
-        
-        /* 新的总计模块样式 */
-        .total-summary-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 15px;
-        }
-        
-        .summary-category {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            background: #f8f9fa;
-            border-radius: 6px;
-            border-left: 4px solid #1890ff;
-        }
-        
-        .category-name {
-            font-weight: bold;
-            color: #333;
-            font-size: 14px;
-        }
-        
-        .category-value {
-            font-weight: bold;
-            color: #1890ff;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        /* 移动端固定定位 */
-        .sticky-total-mobile {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 15px;
-        }
-        
-        /* 新增模块样式 */
-        .new-module-section {
-            margin-top: 20px;
-        }
-        
-        /* 无尽梦魇积分样式 */
-        .nightmare-score {
-            margin-bottom: 20px;
-            padding: 15px;
-            background: white;
-            border-radius: 8px;
-            border: 1px solid #e1e5e9;
-        }
-        
-        .score-title {
-            font-size: 14px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 10px;
-        }
-        
-        .slider-container {
-            margin-bottom: 15px;
-        }
-        
-        .slider-labels {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
-            font-size: 12px;
-            color: #666;
-        }
-        
-        .score-slider {
-            width: 100%;
-            height: 6px;
-            border-radius: 3px;
-            background: #ddd;
-            outline: none;
-            -webkit-appearance: none;
-        }
-        
-        .score-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: #1890ff;
-            cursor: pointer;
-        }
-        
-        .score-slider::-moz-range-thumb {
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: #1890ff;
-            cursor: pointer;
-            border: none;
-        }
-        
-        .slider-value {
-            text-align: center;
-            font-size: 12px;
-            color: #1890ff;
-            margin-top: 5px;
-            font-weight: bold;
-        }
-        
-        .score-rewards {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        
-        .reward-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .reward-label {
-            font-size: 13px;
-            color: #333;
-        }
-        
-        .reward-value {
-            font-size: 13px;
-            font-weight: bold;
-            color: #1890ff;
-        }
-        
-        /* 角色养成模块样式 */
-        .character-development-inputs {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 10px;
-        }
-        
-        .character-development-input {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px;
-            background: white;
-            border-radius: 6px;
-            border: 1px solid #e1e5e9;
-        }
-        
-        .character-development-input label {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-weight: bold;
-            color: #555;
-            min-width: 200px;
-            margin-bottom: 0;
-        }
-        
-        .character-development-input input {
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            width: 80px;
-            text-align: center;
-        }
-        
-        .character-development-btn {
-            padding: 10px 8px;
-            border: 2px solid #ddd;
-            background: white;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: bold;
-            text-align: center;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin-top: 5px;
-        }
-        
-        .character-development-btn:hover {
-            border-color: #1890ff;
-            background: #f0f8ff;
-        }
-        
-        .character-development-btn.active {
-            border-color: #1890ff;
-            background: #1890ff;
-            color: white;
-        }
-        
-        /* 模块开关样式 */
-        .module-switch {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-left: auto;
-        }
-        
-        .module-switch-label {
-            font-size: 12px;
-            color: #666;
-            white-space: nowrap;
-        }
-        
+
         /* 新增模块按钮样式 */
         .main-story-buttons {
             margin-top: 10px;
         }
-        
+
         .main-story-columns {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
         }
-        
+
         .main-story-column {
             display: flex;
             flex-direction: column;
             gap: 8px;
         }
-        
+
         .main-story-btn {
             padding: 10px 8px;
             border: 2px solid #ddd;
@@ -803,35 +325,35 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        
+
         .main-story-btn:hover {
             border-color: #1890ff;
             background: #f0f8ff;
         }
-        
+
         .main-story-btn.active {
             border-color: #1890ff;
             background: #1890ff;
             color: white;
         }
-        
+
         /* 狄斯暗影（EX）按钮样式 */
         .ex-buttons {
             margin-top: 10px;
         }
-        
+
         .ex-columns {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
         }
-        
+
         .ex-column {
             display: flex;
             flex-direction: column;
             gap: 8px;
         }
-        
+
         .ex-btn {
             padding: 10px 8px;
             border: 2px solid #ddd;
@@ -846,18 +368,18 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        
+
         .ex-btn:hover {
             border-color: #1890ff;
             background: #f0f8ff;
         }
-        
+
         .ex-btn.active {
             border-color: #1890ff;
             background: #1890ff;
             color: white;
         }
-        
+
         .memory-storm-buttons,
         .pollution-nest-buttons,
         .cleanup-operation-buttons {
@@ -866,7 +388,7 @@
             gap: 8px;
             margin-top: 10px;
         }
-        
+
         .memory-storm-btn,
         .pollution-nest-btn,
         .cleanup-operation-btn {
@@ -883,14 +405,14 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        
+
         .memory-storm-btn:hover,
         .pollution-nest-btn:hover,
         .cleanup-operation-btn:hover {
             border-color: #1890ff;
             background: #f0f8ff;
         }
-        
+
         .memory-storm-btn.active,
         .pollution-nest-btn.active,
         .cleanup-operation-btn.active {
@@ -898,20 +420,20 @@
             background: #1890ff;
             color: white;
         }
-        
+
         .palma-ruins-buttons {
             display: flex;
             flex-direction: column;
             gap: 8px;
             margin-top: 10px;
         }
-        
+
         .palma-ruins-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 8px;
         }
-        
+
         .palma-ruins-btn {
             padding: 10px 8px;
             border: 2px solid #ddd;
@@ -926,513 +448,853 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        
+
         .palma-ruins-btn:hover {
             border-color: #1890ff;
             background: #f0f8ff;
         }
-        
+
         .palma-ruins-btn.active {
             border-color: #1890ff;
             background: #1890ff;
             color: white;
         }
-        
-        /* 移动端优先的响应式设计 */
+
+        /* 资源图标样式 */
+        .resource-icon {
+            width: 24px;
+            height: 24px;
+            vertical-align: middle;
+            margin: 0 2px;
+        }
+
+        .resource-icon.small {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* 其他原有样式 */
+        .resource-input {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .resource-input label {
+            width: 120px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .resource-input input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 120px;
+        }
+
+        .custom-adjust {
+            margin-top: 10px;
+        }
+
+        .custom-tip {
+            font-size: 12px;
+            color: #1890ff;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .accumulation-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 8px 0;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .item-info {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+
+        .item-title {
+            font-weight: bold;
+            color: #333;
+            min-width: 120px;
+        }
+
+        .item-subtitle {
+            color: #666;
+            min-width: 80px;
+            font-size: 14px;
+        }
+
+        .item-value {
+            font-weight: bold;
+            color: #1890ff;
+            margin-left: 10px;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .switch-group {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            gap: 10px;
+        }
+
+        .switch-group.small {
+            margin: 0 0 0 10px;
+        }
+
+        .switch {
+            position: relative;
+            width: 40px;
+            height: 20px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 20px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #1890ff;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
+        .switch-label {
+            font-size: 12px;
+            margin-left: 5px;
+            color: #666;
+        }
+
+        /* 在这里添加开关标签高亮样式 */
+        .switch-label.active {
+            color: #1890ff;
+            font-weight: bold;
+        }
+
+        .switch-label.inactive {
+            color: #999;
+        }
+
+        .time-options {
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+        }
+
+        .time-option {
+            flex: 1;
+            padding: 12px;
+            min-width: 0; /* 防止内容溢出 */
+        }
+
+        .time-title {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .time-date {
+            font-size: 12px;
+            color: #666;
+            margin: 3px 0;
+        }
+
+        .time-days {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1890ff;
+            margin: 3px 0;
+        }
+
+        .time-weeks {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .time-option {
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .time-option.active {
+            border-color: #1890ff;
+            background: #f0f8ff;
+        }
+
+        .time-days {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1890ff;
+            margin: 5px 0;
+        }
+
+        .time-weeks {
+            font-size: 14px;
+            color: #666;
+            font-weight: normal;
+        }
+
+        .result {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        .result-item.simple {
+            font-size: 18px;
+        }
+
+        .result-item.highlight {
+            font-weight: bold;
+            font-size: 20px;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+            margin-top: 15px;
+        }
+
+        .summary-section {
+            margin: 15px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #52c41a;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            font-size: 16px;
+        }
+
+        .summary-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .summary-value {
+            font-weight: bold;
+            color: #52c41a;
+        }
+
+        .shop-section {
+            margin-top: 15px;
+            padding: 15px;
+            background: #e8f4fd;
+            border-radius: 8px;
+        }
+
+        .shop-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .certification-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .certification-btn {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .certification-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .certification-count {
+            font-weight: bold;
+            color: #ffa500;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .training-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .training-btn {
+            padding: 12px 8px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .training-btn:hover {
+            border-color: #1890ff;
+            background: #f0f8ff;
+        }
+
+        .training-btn.active {
+            border-color: #1890ff;
+            background: #1890ff;
+            color: white;
+        }
+
+        .nightmare-score {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e1e5e9;
+        }
+
+        .score-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .slider-container {
+            margin-bottom: 15px;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .score-slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .score-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #1890ff;
+            cursor: pointer;
+        }
+
+        .score-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #1890ff;
+            cursor: pointer;
+            border: none;
+        }
+
+        .slider-value {
+            text-align: center;
+            font-size: 12px;
+            color: #1890ff;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        .score-rewards {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .reward-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .reward-label {
+            font-size: 13px;
+            color: #333;
+        }
+
+        .reward-value {
+            font-size: 13px;
+            font-weight: bold;
+            color: #1890ff;
+        }
+
+                /* 禁用状态样式 */
+        .disabled-section {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .disabled-section .skin-btn {
+            background: #f0f0f0;
+            color: #999;
+            cursor: not-allowed;
+        }
+
+        .disabled-section .skin-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .disabled-section .skin-btn:active {
+            background: #f0f0f0;
+        }
+
+        /* 新增角色养成模块样式 */
+        .character-development-input {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 6px 0;
+            padding: 6px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e1e5e9;
+            gap: 10px;
+        }
+
+        .character-development-label {
+            font-weight: bold;
+            color: #555;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .character-development-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .character-development-value {
+            font-weight: bold;
+            color: #1890ff;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .character-development-btn {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .character-development-btn:hover {
+            border-color: #1890ff;
+            background: #f0f8ff;
+        }
+
+        .character-development-btn.active {
+            border-color: #1890ff;
+            background: #1890ff;
+            color: white;
+        }
+
+        /* 模块开关样式 */
+        .module-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 10px;
+        }
+
+        .module-toggle-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* 移动端适配 */
         @media (max-width: 768px) {
             .gacha-calculator {
-                padding: 8px;
-                min-height: 100vh;
-                background: #f5f7fa;
+                padding: 10px;
             }
             
             .calculator-layout {
-                display: flex;
-                flex-direction: column;
-                gap: 12px;
-            }
-            
-            .left-panel {
-                order: -1; /* 总计模块移到最上面 */
+                grid-template-columns: 1fr;
+                gap: 15px;
             }
             
             .sticky-panel {
-                position: static;
-            }
-            
-            .sticky-total-mobile {
                 position: sticky;
-                top: 0;
-                z-index: 1000;
+                top: 10px;
+                z-index: 100;
                 background: white;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-                margin: -8px -8px 12px -8px;
-                border-radius: 0;
-                padding: 12px 15px;
+                border-radius: 15px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+                margin-bottom: 15px;
+            }
+
+            .time-options {
+                flex-direction: row;
+                gap: 8px;
+            }
+
+            .time-option {
+                padding: 10px;
+            }
+
+            .time-title {
+                font-size: 13px;
+            }
+
+            .time-date {
+                font-size: 11px;
+            }
+
+            .time-days {
+                font-size: 14px;
+            }
+
+            .time-weeks {
+                font-size: 11px;
             }
             
             .card {
-                padding: 16px;
-                border-radius: 12px;
-                margin-bottom: 8px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-                width: 100%; /* 确保移动端宽度不变 */
+                padding: 15px;
             }
             
-            h1 {
-                font-size: 20px;
-                margin-bottom: 16px;
-                text-align: center;
-                padding: 0 10px;
-            }
-            
-            h1 img.resource-icon {
-                width: 36px !important;
-                height: auto !important;
-            }
-            
-            .section-header {
-                font-size: 16px;
-                padding: 12px 0;
-                margin-bottom: 12px;
-                user-select: none;
-                -webkit-tap-highlight-color: transparent;
-            }
-            
-            .collapse-icon {
-                font-size: 18px;
-                min-width: 20px;
-                text-align: center;
-            }
-            
-            /* 资源输入优化 */
             .resource-vertical {
-                gap: 12px;
+                gap: 10px;
             }
             
             .resource-input-vertical {
                 flex-direction: column;
-                align-items: stretch;
+                align-items: flex-start;
                 gap: 8px;
-                padding: 12px;
-                background: #f8f9fa;
-                border-radius: 8px;
-                border: 1px solid #e8ecef;
             }
             
             .resource-input-vertical label {
                 min-width: auto;
-                font-size: 14px;
-                font-weight: 600;
-                color: #333;
-                display: flex;
-                align-items: center;
-                gap: 6px;
             }
             
             .resource-input-vertical input {
                 width: 100%;
-                max-width: none;
-                min-height: 44px;
-                padding: 12px;
-                font-size: 16px; /* 防止iOS缩放 */
-                border: 1px solid #d0d7de;
-                border-radius: 6px;
-                background: white;
+                max-width: 120px;
             }
             
-            /* 皮肤预留区域 */
             .skin-reserve-row {
-                display: flex;
-                flex-direction: column;
+                grid-template-columns: 1fr;
                 gap: 10px;
             }
             
-            .skin-item.compact {
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-                padding: 12px;
-                background: #f8f9fa;
-                border: 1px solid #e8ecef;
-            }
-            
-            .skin-item.compact .skin-info {
-                flex-direction: row;
-                align-items: center;
+            .dark-zone-switches {
+                flex-direction: column;
                 gap: 8px;
+                width: 100%;
+                margin-top: 8px;
             }
             
-            .skin-item.compact .skin-price {
-                font-size: 14px;
-                font-weight: 600;
+            .target-buttons {
+                grid-template-columns: 1fr;
             }
             
-            .skin-item.compact .skin-controls {
-                display: flex;
-                align-items: center;
-                gap: 12px;
+            .rating-buttons {
+                grid-template-columns: 1fr;
             }
             
-            .skin-btn {
-                min-width: 44px;
-                min-height: 44px;
-                width: 44px;
-                height: 44px;
-                border: 1px solid #d0d7de;
-                background: white;
-                border-radius: 6px;
-                font-size: 18px;
-                font-weight: bold;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                -webkit-tap-highlight-color: transparent;
+            .target-btn, .rating-btn {
+                font-size: 12px;
+                padding: 8px 6px;
             }
-            
-            .skin-count {
-                min-width: 50px;
-                text-align: center;
-                font-weight: 600;
-                font-size: 14px;
+
+            /* 新增模块移动端适配 */
+            .main-story-columns {
+                grid-template-columns: 1fr;
             }
-            
-            /* 按钮组优化 */
-            .target-buttons,
-            .rating-buttons,
+
+            .main-story-btn {
+                font-size: 11px;
+                padding: 8px 6px;
+            }
+
+            /* 狄斯暗影（EX）移动端适配 */
+            .ex-columns {
+                grid-template-columns: 1fr;
+            }
+
+            .ex-btn {
+                font-size: 11px;
+                padding: 8px 6px;
+            }
+
             .memory-storm-buttons,
             .pollution-nest-buttons,
             .cleanup-operation-buttons {
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
+                grid-template-columns: 1fr;
             }
-            
-            .main-story-buttons,
-            .ex-buttons {
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
+
+            .memory-storm-btn,
+            .pollution-nest-btn,
+            .cleanup-operation-btn {
+                font-size: 12px;
+                padding: 8px 6px;
             }
-            
-            .main-story-columns,
-            .ex-columns {
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-            }
-            
-            .palma-ruins-buttons {
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-            }
-            
+
             .palma-ruins-row {
-                display: flex;
+                grid-template-columns: 1fr;
+            }
+
+            .palma-ruins-btn {
+                font-size: 12px;
+                padding: 8px 6px;
+            }
+            
+            .resource-input {
                 flex-direction: column;
-                gap: 8px;
+                align-items: flex-start;
             }
             
-            /* 通用按钮样式 */
-            .target-btn, .rating-btn, .main-story-btn, .ex-btn,
-            .memory-storm-btn, .pollution-nest-btn, .cleanup-operation-btn,
-            .palma-ruins-btn, .character-development-btn {
-                min-height: 48px;
-                padding: 12px 10px;
-                font-size: 14px;
-                border: 2px solid #e8ecef;
-                border-radius: 8px;
-                background: white;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                text-align: center;
-                line-height: 1.3;
-                -webkit-tap-highlight-color: transparent;
-                transition: all 0.2s ease;
+            .resource-input label {
+                width: auto;
+                margin-bottom: 5px;
             }
             
-            .target-btn:hover, .rating-btn:hover, .main-story-btn:hover, .ex-btn:hover,
-            .memory-storm-btn:hover, .pollution-nest-btn:hover, .cleanup-operation-btn:hover,
-            .palma-ruins-btn:hover, .character-development-btn:hover {
-                border-color: #1890ff;
-                background: #f0f8ff;
-            }
-            
-            .target-btn.active, .rating-btn.active, .main-story-btn.active, .ex-btn.active,
-            .memory-storm-btn.active, .pollution-nest-btn.active, .cleanup-operation-btn.active,
-            .palma-ruins-btn.active, .character-development-btn.active {
-                border-color: #1890ff;
-                background: #1890ff;
-                color: white;
-            }
-            
-            /* 时间选项优化 */
             .time-options {
-                display: flex;
+                grid-template-columns: 1fr;
+            }
+            
+            .accumulation-item {
                 flex-direction: column;
-                gap: 12px;
-            }
-            
-            .time-option {
-                padding: 16px;
-                border: 2px solid #e8ecef;
-                border-radius: 10px;
-                text-align: center;
-                -webkit-tap-highlight-color: transparent;
-            }
-            
-            .time-option.active {
-                border-color: #1890ff;
-                background: #f0f8ff;
-            }
-            
-            /* 图表优化 */
-            .summary-chart-container {
-                display: flex;
-                flex-direction: column;
-                gap: 16px;
-            }
-            
-            .chart-wrapper {
-                height: 200px;
-                position: relative;
-            }
-            
-            .chart-legend {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .legend-item {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                padding: 8px;
-                border-radius: 6px;
-                -webkit-tap-highlight-color: transparent;
-            }
-            
-            /* 总计网格优化 */
-            .total-summary-grid {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .summary-category {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 12px;
-                background: #f8f9fa;
-                border-radius: 8px;
-                border-left: 4px solid #1890ff;
-            }
-            
-            .category-name {
-                font-size: 14px;
-                font-weight: 600;
-            }
-            
-            .category-value {
-                font-size: 14px;
-                font-weight: 600;
-                display: flex;
-                align-items: center;
-                gap: 4px;
-            }
-            
-            /* 子区域优化 */
-            .sub-section {
-                margin: 16px 0;
-                padding: 16px;
-                background: #f8f9fa;
-                border-radius: 10px;
-                border-left: 4px solid #1890ff;
-            }
-            
-            .sub-title {
-                font-size: 15px;
-                font-weight: 600;
-                margin-bottom: 12px;
-                color: #333;
-            }
-            
-            /* 开关组优化 */
-            .switch-group {
-                display: flex;
-                align-items: center;
-                margin: 12px 0;
-                padding: 8px 0;
+                align-items: flex-start;
             }
             
             .switch-group.small {
-                margin: 0;
-                padding: 0;
-            }
-            
-            .switch {
-                min-width: 44px;
-                height: 24px;
-            }
-            
-            .switch-label {
-                font-size: 14px;
-                margin-left: 8px;
-                color: #666;
-            }
-            
-            /* 积累项优化 */
-            .accumulation-item {
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-                margin: 10px 0;
-                padding: 12px;
-                background: white;
-                border-radius: 8px;
-                border: 1px solid #e8ecef;
+                margin: 5px 0 0 0;
             }
             
             .item-info {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-            
-            .item-title {
-                font-size: 14px;
-                font-weight: 600;
-            }
-            
-            .item-value {
-                font-size: 14px;
-                font-weight: 600;
-                display: flex;
-                align-items: center;
-                gap: 4px;
-            }
-            
-            /* 角色养成输入优化 */
-            .character-development-inputs {
-                display: flex;
-                flex-direction: column;
-                gap: 12px;
-            }
-            
-            .character-development-input {
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-                padding: 12px;
-                background: white;
-                border-radius: 8px;
-                border: 1px solid #e8ecef;
-            }
-            
-            .character-development-input label {
-                min-width: auto;
-                font-size: 14px;
-                font-weight: 600;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-            
-            .character-development-input input {
-                min-height: 44px;
-                padding: 12px;
-                font-size: 16px;
-                border: 1px solid #d0d7de;
-                border-radius: 6px;
-                text-align: center;
-            }
-            
-            /* 无尽梦魇滑块优化 */
-            .nightmare-score {
-                padding: 16px;
-                background: white;
-                border-radius: 8px;
-                border: 1px solid #e8ecef;
-            }
-            
-            .score-slider {
                 width: 100%;
-                height: 8px;
-                border-radius: 4px;
-                -webkit-appearance: none;
-                background: #e8ecef;
+                margin-bottom: 8px;
             }
             
-            .score-slider::-webkit-slider-thumb {
-                -webkit-appearance: none;
-                width: 24px;
-                height: 24px;
-                border-radius: 50%;
-                background: #1890ff;
-                border: 2px solid white;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            h1 {
+                font-size: 24px;
             }
             
-            /* 模块开关优化 */
-            .module-switch {
+            h2 {
+                font-size: 16px;
+            }
+            
+            .certification-controls {
+                margin-top: 8px;
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .training-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .summary-section {
+                padding: 10px;
+            }
+            
+            .summary-item {
+                font-size: 14px;
+            }
+            
+            .resource-icon {
+                width: 22px;
+                height: 22px;
+            }
+            
+            .resource-icon.small {
+                width: 18px;
+                height: 18px;
+            }
+
+            /* 角色养成模块移动端适配 */
+            .character-development-input {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+
+            .character-development-label {
                 display: flex;
                 align-items: center;
+                justify-content: space-between;
                 gap: 8px;
-                margin-left: auto;
+                flex-direction: row;
+            }
+
+            .character-development-controls {
+                align-self: center;
+            }
+
+            .module-toggle {
+                margin-left: 0;
+                margin-top: 5px;
+            }
+
+        @media (max-width: 480px) {
+            .gacha-calculator {
+                padding: 5px;
             }
             
-            .module-switch-label {
+            .card {
+                padding: 10px;
+            }
+            
+            .time-title {
                 font-size: 12px;
-                color: #666;
-                white-space: nowrap;
             }
             
-            /* 资源图标优化 */
+            .time-date {
+                font-size: 10px;
+            }
+            
+            .time-days {
+                font-size: 13px;
+            }
+            
+            .time-weeks {
+                font-size: 10px;
+            }
+            
+            .time-option {
+                padding: 8px;
+            }
+
+            .resource-input input {
+                width: 100%;
+            }
+            
+            .switch-group {
+                flex-wrap: wrap;
+            }
+            
+            .result-item.simple {
+                font-size: 16px;
+            }
+            
+            .result-item.highlight {
+                font-size: 18px;
+            }
+            
+            .sub-section {
+                padding: 10px;
+            }
+            
+            .summary-item {
+                font-size: 13px;
+            }
+            
+            .resource-input-vertical label {
+                font-size: 13px;
+            }
+            
+            .skin-item.compact {
+                padding: 8px;
+            }
+            
+            .target-btn, .rating-btn {
+                font-size: 11px;
+                padding: 6px 4px;
+            }
+
+            /* 新增模块小屏幕适配 */
+            .main-story-btn {
+                font-size: 10px;
+                padding: 6px 4px;
+            }
+
+            /* 狄斯暗影（EX）小屏幕适配 */
+            .ex-btn {
+                font-size: 10px;
+                padding: 6px 4px;
+            }
+
+            .memory-storm-btn,
+            .pollution-nest-btn,
+            .cleanup-operation-btn,
+            .palma-ruins-btn {
+                font-size: 11px;
+                padding: 6px 4px;
+            }
+            
             .resource-icon {
                 width: 20px;
                 height: 20px;
             }
             
             .resource-icon.small {
-                width: 14px;
-                height: 14px;
-            }
-            
-            /* 确保文本不会溢出 */
-            .main-story-btn, .ex-btn {
-                white-space: normal;
-                word-wrap: break-word;
-                line-height: 1.3;
-            }
-        }
-        
-        /* 超小屏幕额外优化 */
-        @media (max-width: 360px) {
-            .gacha-calculator {
-                padding: 6px;
-            }
-            
-            .card {
-                padding: 12px;
-            }
-            
-            h1 {
-                font-size: 18px;
-            }
-            
-            .section-header {
-                font-size: 15px;
-            }
-            
-            .target-btn, .rating-btn, .main-story-btn, .ex-btn,
-            .memory-storm-btn, .pollution-nest-btn, .cleanup-operation-btn,
-            .palma-ruins-btn, .character-development-btn {
-                font-size: 13px;
-                padding: 10px 8px;
+                width: 16px;
+                height: 16px;
             }
         }
     </style>
@@ -1440,96 +1302,74 @@
 <body>
     <div id="app">
         <div class="gacha-calculator">
-            <h1><img src="icons/hl.gif" class="resource-icon" alt="海拉" style="width: 48px; height: auto;"> 海拉的钱包</h1>
+            <h1><img :src="hlIcon" class="resource-icon" alt="海拉" style="width: 40px; height: 40px;"> 海拉的钱包</h1>
             
             <div class="calculator-layout">
-                <!-- 左侧：合并后的卡池时间和总计模块 -->
+                <!-- 左侧：卡池时间和攒抽预测 -->
                 <div class="left-panel sticky-panel">
-                    <!-- 合并后的卡池时间和总计模块 -->
-                    <div class="time-total-section card" :class="{ 'sticky-total-mobile': isMobile }">
-                        <h2 @click="toggleSection('timeTotal')" class="section-header">
-                            📊 共计{{ totalPulls }}抽，氪金{{ totalMoney }}元
-                            <span class="collapse-icon">{{ sections.timeTotal ? '−' : '+' }}</span>
+                    <!-- 合并的卡池时间和攒抽预测模块 -->
+                    <div class="time-section card">
+                        <h2 @click="toggleSection('pullSummary')" class="section-header">
+                            📊 共计 {{ futurePulls }} 抽
+                            <span class="collapse-icon">{{ sections.pullSummary ? '−' : '+' }}</span>
                         </h2>
                         
-                        <div v-if="sections.timeTotal" class="section-content">
+                        <!-- 资源信息 - 始终显示 -->
+                        <div class="resource-summary" style="margin-top: 10px;">
+                            <div class="summary-section" style="display: flex; justify-content: space-around; align-items: center; gap: 15px;">
+                                <div class="summary-item" style="display: flex; align-items: center; gap: 8px; margin: 0;">
+                                    <img :src="crystalIcon" class="resource-icon" alt="异方晶">
+                                    <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px;">
+                                        <span class="summary-value">{{ totalCrystalSummary }}</span>
+                                        <div style="font-size: 12px; color: #666;">({{ Math.floor(totalCrystalSummary / 180) }}抽)</div>
+                                    </div>
+                                </div>
+                                <div class="summary-item" style="display: flex; align-items: center; gap: 8px; margin: 0;">
+                                    <img :src="premiumCrystalIcon" class="resource-icon" alt="璀璨晶源">
+                                    <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px;">
+                                        <span class="summary-value">{{ (resources.premiumCrystal || 0) - totalSkinReserve }}</span>
+                                        <div style="font-size: 12px; color: #666;">({{ Math.floor(((resources.premiumCrystal || 0) - totalSkinReserve) / 180) }}抽)</div>
+                                    </div>
+                                </div>
+                                <div class="summary-item" style="display: flex; align-items: center; gap: 8px; margin: 0;">
+                                    <img :src="ticketIcon" class="resource-icon" alt="搜索令">
+                                    <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px;">
+                                        <span class="summary-value">{{ totalTicketsSummary }}</span>
+                                        <div style="font-size: 12px; color: #666;">({{ totalTicketsSummary }}抽)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 详细内容 - 可折叠 -->
+                        <div v-if="sections.pullSummary" class="section-content">
                             <!-- 卡池时间内容 -->
-                            <div class="time-section">
-                                <div class="switch-group">
-                                    <label class="switch">
-                                        <input type="checkbox" v-model="calculateToPoolEnd">
-                                        <span class="slider"></span>
-                                    </label>
-                                    <span class="switch-label">
-                                        {{ calculateToPoolEnd ? '计算到卡池结束当天' : '计算到卡池开放当天' }}
-                                    </span>
+                            <div class="switch-group">
+                                <span class="switch-label" :class="{ active: !calculateToPoolEnd, inactive: calculateToPoolEnd }">计算到卡池开放当天</span>
+                                <label class="switch">
+                                    <input type="checkbox" v-model="calculateToPoolEnd">
+                                    <span class="slider"></span>
+                                </label>
+                                <span class="switch-label" :class="{ active: calculateToPoolEnd, inactive: !calculateToPoolEnd }">计算到卡池结束当天</span>
+                            </div>
+                            
+                            <div class="time-options">
+                                <div class="time-option" 
+                                    :class="{ active: selectedTime === 'nextVersion' }"
+                                    @click="selectedTime = 'nextVersion'">
+                                    <div class="time-title">下版本</div>
+                                    <div class="time-date">2025年11月20日</div>
+                                    <div class="time-days">剩余 {{ daysToNextVersion }} 天</div>
+                                    <div class="time-weeks">持续 {{ versionWeeks }} 周</div>
                                 </div>
                                 
-                                <div class="time-options">
-                                    <div class="time-option" 
-                                         :class="{ active: selectedTime === 'nextVersion' }"
-                                         @click="selectedTime = 'nextVersion'">
-                                        <div class="time-title">下版本</div>
-                                        <div class="time-date">2025年11月20日</div>
-                                        <div class="time-days">剩余 {{ daysToNextVersion }} 天</div>
-                                        <div class="time-weeks">持续 {{ versionWeeks }} 周</div>
-                                    </div>
-                                    
-                                    <div class="time-option" 
-                                         :class="{ active: selectedTime === 'newYear' }"
-                                         @click="selectedTime = 'newYear'">
-                                        <div class="time-title">新年版本</div>
-                                        <div class="time-date">2026年2月17日</div>
-                                        <div class="time-days">剩余 {{ daysToNewYear }} 天</div>
-                                        <div class="time-weeks">持续 {{ versionWeeks }} 周</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 饼状图和分类汇总 -->
-                            <div class="summary-chart-container">
-                                <!-- 饼状图 -->
-                                <div class="chart-wrapper">
-                                    <canvas ref="pieChart"></canvas>
-                                    <div class="chart-tooltip" ref="chartTooltip"></div>
-                                </div>
-                                
-                                <!-- 图例 -->
-                                <div class="chart-legend">
-                                    <div class="legend-item" v-for="(category, index) in summaryCategories" 
-                                         :key="category.key"
-                                         @mouseenter="showTooltip(category)"
-                                         @mouseleave="hideTooltip">
-                                        <div class="legend-color" :style="{ backgroundColor: categoryColors[index] }"></div>
-                                        <span class="legend-text">{{ category.label }}: {{ category.pulls }}抽 ({{ category.percentage }}%)</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 分类详细数据 -->
-                            <div class="total-summary-grid">
-                                <div class="summary-category" v-for="category in summaryCategories" :key="category.key">
-                                    <span class="category-name">{{ category.label }}：</span>
-                                    <span class="category-value">
-                                        <template v-if="category.key === 'current'">
-                                            <img src="icons/crystal.png" class="resource-icon" alt="异方晶">{{ formatNumber(category.crystal) }}（{{ category.pulls }}抽）
-                                        </template>
-                                        <template v-else-if="category.key === 'daily'">
-                                            <img src="icons/crystal.png" class="resource-icon" alt="异方晶">{{ formatNumber(category.crystal) }}（{{ category.pulls }}抽）
-                                        </template>
-                                        <template v-else-if="category.key === 'activity'">
-                                            <img src="icons/crystal.png" class="resource-icon" alt="异方晶">{{ formatNumber(category.crystal) }}（{{ category.pulls }}抽）
-                                        </template>
-                                        <template v-else-if="category.key === 'potential'">
-                                            <img src="icons/crystal.png" class="resource-icon" alt="异方晶">{{ formatNumber(category.crystal) }}（{{ category.pulls }}抽）
-                                        </template>
-                                        <template v-else-if="category.key === 'recharge'">
-                                            <img src="icons/crystal.png" class="resource-icon" alt="异方晶">{{ formatNumber(category.crystal) }}（{{ category.pulls }}抽）
-                                        </template>
-                                        <template v-else-if="category.key === 'other'">
-                                            <img src="icons/crystal.png" class="resource-icon" alt="异方晶">{{ formatNumber(category.crystal) }}（{{ category.pulls }}抽）
-                                        </template>
-                                    </span>
+                                <div class="time-option" 
+                                    :class="{ active: selectedTime === 'newYear' }"
+                                    @click="selectedTime = 'newYear'">
+                                    <div class="time-title">新年版本</div>
+                                    <div class="time-date">2026年2月17日</div>
+                                    <div class="time-days">剩余 {{ daysToNewYear }} 天</div>
+                                    <div class="time-weeks">持续 {{ versionWeeks }} 周</div>
                                 </div>
                             </div>
                         </div>
@@ -1538,16 +1378,17 @@
 
                 <!-- 右侧：当前资源和日常积累 -->
                 <div class="right-panel">
-                    <!-- 当前资源模块 -->
+                    <!-- 当前资源 -->
                     <div class="input-section card">
                         <h2 @click="toggleSection('resources')" class="section-header">
                             💎 当前资源
                             <span class="collapse-icon">{{ sections.resources ? '−' : '+' }}</span>
                         </h2>
                         <div v-if="sections.resources" class="section-content">
-                            <!-- 当前库存 -->
+                            <!-- 当前库存 - 修改为垂直布局 -->
                             <div class="sub-section">
                                 <h3 class="sub-title">当前库存</h3>
+                                <!-- 使用璀璨晶源开关移入当前库存 -->
                                 <div class="switch-group">
                                     <label class="switch">
                                         <input type="checkbox" v-model="usePremiumCrystal">
@@ -1558,57 +1399,57 @@
                                 <div class="resource-vertical">
                                     <div class="resource-input-vertical">
                                         <label>
-                                            <img src="icons/crystal.png" class="resource-icon" alt="异方晶"> 异方晶：
+                                            <img :src="crystalIcon" class="resource-icon" alt="异方晶"> 异方晶：
                                         </label>
-                                        <input type="number" v-model.number="resources.crystal" placeholder="0" min="0">
+                                        <input type="number" v-model.number="resources.crystal" placeholder="0" min="0" step="1" @input="validateInput('crystal')">
                                     </div>
                                     <div class="resource-input-vertical">
                                         <label>
-                                            <img src="icons/premium_crystal.png" class="resource-icon" alt="璀璨晶源"> 璀璨晶源：
+                                            <img :src="premiumCrystalIcon" class="resource-icon" alt="璀璨晶源"> 璀璨晶源：
                                         </label>
-                                        <input type="number" v-model.number="resources.premiumCrystal" placeholder="0" min="0">
+                                        <input type="number" v-model.number="resources.premiumCrystal" placeholder="0" min="0" step="1" @input="validateInput('premiumCrystal')">
                                     </div>
                                     <div class="resource-input-vertical">
                                         <label>
-                                            <img src="icons/ticket.png" class="resource-icon" alt="搜索令"> 搜索令：
+                                            <img :src="ticketIcon" class="resource-icon" alt="搜索令"> 搜索令：
                                         </label>
-                                        <input type="number" v-model.number="resources.tickets" placeholder="0" min="0">
+                                        <input type="number" v-model.number="resources.tickets" placeholder="0" min="0" step="1" @input="validateInput('tickets')">
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- 皮肤预留红晶 -->
-                            <div class="sub-section">
+                            <!-- 皮肤预留红晶 - 修改按键布局 -->
+                            <div class="sub-section" :class="{ 'disabled-section': !usePremiumCrystal }">
                                 <h3 class="sub-title">皮肤预留红晶</h3>
                                 <div class="skin-reserve-row">
                                     <div class="skin-item compact">
                                         <div class="skin-info">
-                                            <span class="skin-price">✧✧880<img src="icons/red_crystal.png" class="resource-icon small" alt="红晶"></span>
+                                            <span class="skin-price">✧✧880<img :src="redCrystalIcon" class="resource-icon small" alt="红晶"></span>
                                         </div>
                                         <div class="skin-controls">
-                                            <button class="skin-btn" @click="adjustSkinCount(880, -1)">−</button>
+                                            <button class="skin-btn" @click="adjustSkinCount(880, -1)" :disabled="!usePremiumCrystal">−</button>
                                             <span class="skin-count">{{ skinReserve.skin880 }} 个</span>
-                                            <button class="skin-btn" @click="adjustSkinCount(880, 1)">+</button>
+                                            <button class="skin-btn" @click="adjustSkinCount(880, 1)" :disabled="!usePremiumCrystal">+</button>
                                         </div>
                                     </div>
                                     <div class="skin-item compact">
                                         <div class="skin-info">
-                                            <span class="skin-price">✧✧✧1280<img src="icons/red_crystal.png" class="resource-icon small" alt="红晶"></span>
+                                            <span class="skin-price">✧✧✧1280<img :src="redCrystalIcon" class="resource-icon small" alt="红晶"></span>
                                         </div>
                                         <div class="skin-controls">
-                                            <button class="skin-btn" @click="adjustSkinCount(1280, -1)">−</button>
+                                            <button class="skin-btn" @click="adjustSkinCount(1280, -1)" :disabled="!usePremiumCrystal">−</button>
                                             <span class="skin-count">{{ skinReserve.skin1280 }} 个</span>
-                                            <button class="skin-btn" @click="adjustSkinCount(1280, 1)">+</button>
+                                            <button class="skin-btn" @click="adjustSkinCount(1280, 1)" :disabled="!usePremiumCrystal">+</button>
                                         </div>
                                     </div>
                                     <div class="skin-item compact">
                                         <div class="skin-info">
-                                            <span class="skin-price">✧✧✧✧2580<img src="icons/red_crystal.png" class="resource-icon small" alt="红晶"></span>
+                                            <span class="skin-price">✧✧✧✧2580<img :src="redCrystalIcon" class="resource-icon small" alt="红晶"></span>
                                         </div>
                                         <div class="skin-controls">
-                                            <button class="skin-btn" @click="adjustSkinCount(2580, -1)">−</button>
+                                            <button class="skin-btn" @click="adjustSkinCount(2580, -1)" :disabled="!usePremiumCrystal">−</button>
                                             <span class="skin-count">{{ skinReserve.skin2580 }} 个</span>
-                                            <button class="skin-btn" @click="adjustSkinCount(2580, 1)">+</button>
+                                            <button class="skin-btn" @click="adjustSkinCount(2580, 1)" :disabled="!usePremiumCrystal">+</button>
                                         </div>
                                     </div>
                                 </div>
@@ -1617,40 +1458,44 @@
                             <!-- 自定义修正 -->
                             <div class="sub-section">
                                 <h3 class="sub-title">自定义修正</h3>
-                                <div class="resource-input-vertical">
-                                    <label>
-                                        <img src="icons/crystal.png" class="resource-icon" alt="异方晶">数量修正：
-                                    </label>
-                                    <input type="number" v-model.number="customAdjustment" placeholder="0" step="1">
-                                </div>
-                                <div style="font-size: 12px; color: #1890ff; margin-top: 5px; font-style: italic;">
-                                    例如关卡未打满、给复刻池预留或其它异方晶来源等，可填负数
+                                <div class="custom-adjust">
+                                    <div class="resource-input">
+                                        <label style="min-width: 140px;">
+                                            <img :src="crystalIcon" class="resource-icon" alt="异方晶">异方晶修正：
+                                        </label>
+                                        <input type="number" v-model.number="customAdjustment" placeholder="0">
+                                    </div>
+                                    <div class="custom-tip">
+                                        例如给复刻池预留、其它异方晶来源或关卡未打满等，可填负数
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 日常积累模块 -->
+                    <!-- 日常积累 -->
                     <div class="daily-section card">
                         <h2 @click="toggleSection('daily')" class="section-header">
                             📈 日常积累（更替）
                             <span class="collapse-icon">{{ sections.daily ? '−' : '+' }}</span>
                         </h2>
                         <div v-if="sections.daily" class="section-content">
-                            <!-- 原有日常积累内容 -->
+                            <!-- 活跃奖励模块 -->
                             <div class="sub-section">
                                 <h3 class="sub-title">活跃奖励</h3>
+                                <!-- 日常活跃 -->
                                 <div class="accumulation-item">
                                     <div class="item-info">
                                         <span class="item-title">日常{{ selectedDays }}天：</span>
-                                        <span class="item-value"><img src="icons/crystal.png" class="resource-icon" alt="异方晶"> {{ dailyActiveTotal }} </span>
+                                        <span class="item-value"><img :src="crystalIcon" class="resource-icon" alt="异方晶"> {{ dailyActiveTotal }} </span>
                                     </div>
                                 </div>
 
+                                <!-- 周常活跃 -->
                                 <div class="accumulation-item">
                                     <div class="item-info">
                                         <span class="item-title">周常{{ remainingWeeklyCount }}周：</span>
-                                        <span class="item-value"><img src="icons/crystal.png" class="resource-icon" alt="异方晶"> {{ remainingWeeklyTotal }} </span>
+                                        <span class="item-value"><img :src="crystalIcon" class="resource-icon" alt="异方晶"> {{ remainingWeeklyTotal }} </span>
                                     </div>
                                     <div class="switch-group small">
                                         <label class="switch">
@@ -1661,10 +1506,11 @@
                                     </div>
                                 </div>
 
+                                <!-- 每周分享 - 位置调整到情绪检测上方 -->
                                 <div class="accumulation-item">
                                     <div class="item-info">
                                         <span class="item-title">分享{{ remainingShareWeeks }}周：</span>
-                                        <span class="item-value"> <img src="icons/crystal.png" class="resource-icon" alt="异方晶"> {{ remainingShareTotal }} </span>
+                                        <span class="item-value"> <img :src="crystalIcon" class="resource-icon" alt="异方晶"> {{ remainingShareTotal }} </span>
                                     </div>
                                     <div class="switch-group small">
                                         <label class="switch">
@@ -1675,14 +1521,15 @@
                                     </div>
                                 </div>
 
+                                <!-- 情绪检测 - 位置调整到每周分享下方 -->
                                 <div class="accumulation-item">
                                     <div class="item-info">
                                         <span class="item-title">情绪检测：</span>
                                         <span class="item-value">
                                             <template v-if="!emotionDetectionCompleted">
-                                                <img src="icons/crystal.png" class="resource-icon" alt="异方晶">50 <img src="icons/ticket.png" class="resource-icon" alt="搜索令">1
+                                                <img :src="crystalIcon" class="resource-icon" alt="异方晶">50 <img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </template>
-                                            <template v-else><img src="icons/crystal.png" class="resource-icon" alt="异方晶">0 <img src="icons/ticket.png" class="resource-icon" alt="搜索令">0</template>
+                                            <template v-else><img :src="crystalIcon" class="resource-icon" alt="异方晶">0 <img :src="ticketIcon" class="resource-icon" alt="搜索令">0</template>
                                         </span>
                                     </div>
                                     <div class="switch-group small">
@@ -1695,31 +1542,225 @@
                                 </div>
                             </div>
 
-                            <!-- 其他原有日常积累内容保持不变 -->
-                        </div>
-                    </div>
-
-                    <!-- 新增：活动（估算）模块 -->
-                    <div class="activity-section card new-module-section">
-                        <h2 @click="toggleSection('activity')" class="section-header">
-                            🎯 活动（估算）
-                            <span class="collapse-icon">{{ sections.activity ? '−' : '+' }}</span>
-                        </h2>
-                        <div v-if="sections.activity" class="section-content">
+                            <!-- 破碎防线模块 -->
                             <div class="sub-section">
-                                <h3 class="sub-title">活动资源估算</h3>
-                                <div class="resource-vertical">
-                                    <div class="resource-input-vertical">
-                                        <label>
-                                            <img src="icons/crystal.png" class="resource-icon" alt="异方晶"> 活动异方晶：
-                                        </label>
-                                        <input type="number" v-model.number="activityResources.crystal" placeholder="0" min="0">
+                                <h3 class="sub-title">破碎防线</h3>
+                                <!-- 暗域 -->
+                                <div class="dark-zone-section">
+                                    <div class="accumulation-item">
+                                        <div class="item-info">
+                                            <span class="item-title">暗域{{ remainingDarkZoneWeeks }}周：</span>
+                                            <span class="item-value"> <img :src="crystalIcon" class="resource-icon" alt="异方晶"> {{ remainingDarkZoneTotal }}</span>
+                                        </div>
+                                        <div class="dark-zone-switches">
+                                            <div class="switch-group small">
+                                                <label class="switch">
+                                                    <input type="checkbox" v-model="darkZoneSweepOnly">
+                                                    <span class="slider"></span>
+                                                </label>
+                                                <span class="switch-label">仅扫荡</span>
+                                            </div>
+                                            <div class="switch-group small">
+                                                <label class="switch">
+                                                    <input type="checkbox" v-model="darkZoneCompleted">
+                                                    <span class="slider"></span>
+                                                </label>
+                                                <span class="switch-label">本周已完成</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="resource-input-vertical">
-                                        <label>
-                                            <img src="icons/ticket.png" class="resource-icon" alt="搜索令"> 活动搜索令：
+                                    <div class="accumulation-item">
+                                        <div class="item-info">
+                                            <span class="item-title">首通奖励：</span>
+                                            <span class="item-value"> <img :src="crystalIcon" class="resource-icon" alt="异方晶"> {{ totalDarkZoneFirst }}</span>
+                                        </div>
+                                        <div class="switch-group small">
+                                            <label class="switch">
+                                                <input type="checkbox" v-model="darkZoneFirstCompleted">
+                                                <span class="slider"></span>
+                                            </label>
+                                            <span class="switch-label">本期已完成</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 数据间隙模块 -->
+                            <div class="sub-section">
+                                <h3 class="sub-title">数据间隙-上半赛季</h3>
+                                
+                                <!-- 目标奖励子模块 -->
+                                <div class="data-gap-subsection">
+                                    <h4 class="data-gap-title">目标奖励-L1</h4>
+                                    <div class="target-buttons">
+                                        <button 
+                                            class="target-btn" 
+                                            :class="{ active: dataGap.targets.missionComplete }"
+                                            @click="toggleDataGap('targets', 'missionComplete')">
+                                            完成关卡<img :src="crystalIcon" class="resource-icon" alt="异方晶">300
+                                        </button>
+                                        <button 
+                                            class="target-btn" 
+                                            :class="{ active: dataGap.targets.missionCount }"
+                                            @click="toggleDataGap('targets', 'missionCount')">
+                                            完成关卡数量<img :src="crystalIcon" class="resource-icon" alt="异方晶">120
+                                        </button>
+                                        <button 
+                                            class="target-btn" 
+                                            :class="{ active: dataGap.targets.targetComplete }"
+                                            @click="toggleDataGap('targets', 'targetComplete')">
+                                            目标完成数量<img :src="crystalIcon" class="resource-icon" alt="异方晶">140
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- 评分奖励子模块 -->
+                                <div class="data-gap-subsection">
+                                    <h4 class="data-gap-title">评分奖励-L2</h4>
+                                    <div class="rating-buttons">
+                                        <button 
+                                            class="rating-btn" 
+                                            :class="{ active: dataGap.ratings.healing }"
+                                            @click="toggleDataGap('ratings', 'healing')">
+                                            单位治疗量<img :src="crystalIcon" class="resource-icon" alt="异方晶">100
+                                        </button>
+                                        <button 
+                                            class="rating-btn" 
+                                            :class="{ active: dataGap.ratings.shield }"
+                                            @click="toggleDataGap('ratings', 'shield')">
+                                            单位护盾量<img :src="crystalIcon" class="resource-icon" alt="异方晶">100
+                                        </button>
+                                        <button 
+                                            class="rating-btn" 
+                                            :class="{ active: dataGap.ratings.controlTime }"
+                                            @click="toggleDataGap('ratings', 'controlTime')">
+                                            控制时长积分<img :src="crystalIcon" class="resource-icon" alt="异方晶">100
+                                        </button>
+                                        <button 
+                                            class="rating-btn" 
+                                            :class="{ active: dataGap.ratings.controlCount }"
+                                            @click="toggleDataGap('ratings', 'controlCount')">
+                                            控制次数<img :src="crystalIcon" class="resource-icon" alt="异方晶">100
+                                        </button>
+                                        <button 
+                                            class="rating-btn" 
+                                            :class="{ active: dataGap.ratings.totalDamage }"
+                                            @click="toggleDataGap('ratings', 'totalDamage')">
+                                            总伤害<img :src="crystalIcon" class="resource-icon" alt="异方晶">100
+                                        </button>
+                                        <button 
+                                            class="rating-btn" 
+                                            :class="{ active: dataGap.ratings.coreDamage }"
+                                            @click="toggleDataGap('ratings', 'coreDamage')">
+                                            破核期间伤害<img :src="crystalIcon" class="resource-icon" alt="异方晶">100
+                                        </button>
+                                        <button 
+                                            class="rating-btn" 
+                                            :class="{ active: dataGap.ratings.comprehensive }"
+                                            @click="toggleDataGap('ratings', 'comprehensive')">
+                                            综合评分<img :src="crystalIcon" class="resource-icon" alt="异方晶">100
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 狂厄特训模块 -->
+                            <div class="sub-section">
+                                <h3 class="sub-title">狂厄特训</h3>
+                                <div class="training-buttons">
+                                    <button 
+                                        class="training-btn" 
+                                        :class="{ active: trainingModes.steady }"
+                                        @click="toggleTrainingMode('steady')">
+                                        平稳<img :src="crystalIcon" class="resource-icon" alt="异方晶">100<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
+                                    </button>
+                                    <button 
+                                        class="training-btn" 
+                                        :class="{ active: trainingModes.fluctuating }"
+                                        @click="toggleTrainingMode('fluctuating')">
+                                        波动<img :src="crystalIcon" class="resource-icon" alt="异方晶">200<img :src="ticketIcon" class="resource-icon" alt="搜索令">2
+                                    </button>
+                                    <button 
+                                        class="training-btn" 
+                                        :class="{ active: trainingModes.outOfControl }"
+                                        @click="toggleTrainingMode('outOfControl')">
+                                        失控<img :src="crystalIcon" class="resource-icon" alt="异方晶">200
+                                    </button>
+                                    <button 
+                                        class="training-btn" 
+                                        :class="{ active: trainingModes.crazy }"
+                                        @click="toggleTrainingMode('crazy')">
+                                        疯狂<img :src="crystalIcon" class="resource-icon" alt="异方晶">60
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- 祸海之厄模块 - 移入日常积累 -->
+                            <div class="sub-section">
+                                <h3 class="sub-title">无尽梦魇</h3>
+                                <div class="accumulation-item">
+                                    <div class="item-info">
+                                        <span class="item-title">祸海之厄：</span>
+                                        <span class="item-value"> <img :src="crystalIcon" class="resource-icon" alt="异方晶"> {{ nightmareSeaReward }}</span>
+                                    </div>
+                                    <div class="switch-group small">
+                                        <label class="switch">
+                                            <input type="checkbox" v-model="nightmareSeaCompleted">
+                                            <span class="slider"></span>
                                         </label>
-                                        <input type="number" v-model.number="activityResources.tickets" placeholder="0" min="0">
+                                        <span class="switch-label">本期已完成</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 商店兑换 -->
+                            <div class="shop-section">
+                                <div class="shop-title">商店兑换</div>
+                                
+                                <div class="accumulation-item">
+                                    <div class="item-info">
+                                        <span class="item-title">追踪认证-常规：</span>
+                                        <span class="item-value"> <img :src="ticketIcon" class="resource-icon" alt="搜索令"> {{ remainingTrackingExchange }}</span>
+                                    </div>
+                                    <div class="switch-group small">
+                                        <label class="switch">
+                                            <input type="checkbox" v-model="trackingExchanged">
+                                            <span class="slider"></span>
+                                        </label>
+                                        <span class="switch-label">本月已兑换</span>
+                                    </div>
+                                </div>
+
+                                <div class="accumulation-item">
+                                    <div class="item-info">
+                                        <span class="item-title">追踪认证-机密：</span>
+                                        <span class="item-value"> <img :src="ticketIcon" class="resource-icon" alt="搜索令"> {{ trackingCertificationTickets }}</span>
+                                    </div>
+                                    <div class="certification-controls">
+                                        <button class="certification-btn" @click="adjustCertificationCount(-1)">−</button>
+                                        <span class="certification-count"> <img :src="yellowTicketIcon" class="resource-icon" alt="黄票"> {{ trackingCertificationCount * 8 }}</span>
+                                        <button class="certification-btn" @click="adjustCertificationCount(1)">+</button>
+                                    </div>
+                                    <div class="switch-group small">
+                                        <label class="switch">
+                                            <input type="checkbox" v-model="useTrackingCertification">
+                                            <span class="slider"></span>
+                                        </label>
+                                        <span class="switch-label">使用黄票兑换</span>
+                                    </div>
+                                </div>
+
+                                <div class="accumulation-item">
+                                    <div class="item-info">
+                                        <span class="item-title">友情兑换：</span>
+                                        <span class="item-value"> <img :src="ticketIcon" class="resource-icon" alt="搜索令"> {{ remainingFriendshipExchange }}</span>
+                                    </div>
+                                    <div class="switch-group small">
+                                        <label class="switch">
+                                            <input type="checkbox" v-model="friendshipExchanged">
+                                            <span class="slider"></span>
+                                        </label>
+                                        <span class="switch-label">本月已兑换</span>
                                     </div>
                                 </div>
                             </div>
@@ -1737,12 +1778,12 @@
                             <div class="sub-section">
                                 <div class="section-header">
                                     <h3 class="sub-title">无尽梦魇</h3>
-                                    <div class="module-switch">
+                                    <div class="module-toggle">
                                         <label class="switch">
-                                            <input type="checkbox" v-model="moduleEnabled.nightmare">
+                                            <input type="checkbox" v-model="modules.nightmare">
                                             <span class="slider"></span>
                                         </label>
-                                        <span class="module-switch-label">{{ moduleEnabled.nightmare ? '计算此模块' : '不计算此模块' }}</span>
+                                        <span class="module-toggle-label">{{ modules.nightmare ? '计算此模块' : '不计算此模块' }}</span>
                                     </div>
                                 </div>
                                 
@@ -1769,13 +1810,13 @@
                                     <div class="score-rewards">
                                         <div class="reward-item">
                                             <span class="reward-label">
-                                                <img src="icons/crystal.png" class="resource-icon" alt="异方晶"> 
+                                                <img :src="crystalIcon" class="resource-icon" alt="异方晶"> 
                                             </span>
                                             <span class="reward-value">{{ nightmareCrystalReward }}</span>
                                         </div>
                                         <div class="reward-item">
                                             <span class="reward-label">
-                                                <img src="icons/ticket.png" class="resource-icon" alt="搜索令"> 
+                                                <img :src="ticketIcon" class="resource-icon" alt="搜索令"> 
                                             </span>
                                             <span class="reward-value">{{ nightmareTicketReward }}</span>
                                         </div>
@@ -1787,85 +1828,110 @@
                             <div class="sub-section">
                                 <div class="section-header">
                                     <h3 class="sub-title">角色养成</h3>
-                                    <div class="module-switch">
+                                    <div class="module-toggle">
                                         <label class="switch">
-                                            <input type="checkbox" v-model="moduleEnabled.characterDevelopment">
+                                            <input type="checkbox" v-model="modules.characterDevelopment">
                                             <span class="slider"></span>
                                         </label>
-                                        <span class="module-switch-label">{{ moduleEnabled.characterDevelopment ? '计算此模块' : '不计算此模块' }}</span>
+                                        <span class="module-toggle-label">{{ modules.characterDevelopment ? '计算此模块' : '不计算此模块' }}</span>
                                     </div>
                                 </div>
                                 
-                                <div class="character-development-inputs">
-                                    <div class="character-development-input">
-                                        <label>
-                                            未3阶角色数量：
-                                        </label>
-                                        <input type="number" v-model.number="characterDevelopment.tier3" placeholder="0" min="0">
-                                        <span class="item-value"><img src="icons/crystal.png" class="resource-icon" alt="异方晶"> {{ characterDevelopment.tier3 * 180 }}</span>
+                                <div class="character-development-input">
+                                    <span class="character-development-label">
+                                        未3阶角色数量：
+                                        <span class="character-development-value">
+                                            <img :src="crystalIcon" class="resource-icon" alt="异方晶"> {{ characterDevelopment.tier3 * 180 }}
+                                        </span>
+                                    </span>
+                                    <div class="character-development-controls">
+                                        <button class="character-dev-btn" @click="adjustCharacterDev('tier3', -1)">−</button>
+                                        <span class="character-dev-count">{{ characterDevelopment.tier3 }}</span>
+                                        <button class="character-dev-btn" @click="adjustCharacterDev('tier3', 1)">+</button>
                                     </div>
-                                    
-                                    <div class="character-development-input">
-                                        <label>
-                                            未满混响狂级角色数量：
-                                        </label>
-                                        <input type="number" v-model.number="characterDevelopment.maxReverbS" placeholder="0" min="0">
-                                        <span class="item-value"><img src="icons/crystal.png" class="resource-icon" alt="异方晶"> {{ characterDevelopment.maxReverbS * 210 }}</span>
-                                    </div>
-                                    
-                                    <div class="character-development-input">
-                                        <label>
-                                            未满混响危级角色数量：
-                                        </label>
-                                        <input type="number" v-model.number="characterDevelopment.maxReverbA" placeholder="0" min="0">
-                                        <span class="item-value"><img src="icons/crystal.png" class="resource-icon" alt="异方晶"> {{ characterDevelopment.maxReverbA * 60 }}</span>
-                                    </div>
-                                    
-                                    <div class="character-development-input">
-                                        <label>
-                                            未满混响普级角色数量：
-                                        </label>
-                                        <input type="number" v-model.number="characterDevelopment.maxReverbB" placeholder="0" min="0">
-                                        <span class="item-value"><img src="icons/crystal.png" class="resource-icon" alt="异方晶"> {{ characterDevelopment.maxReverbB * 20 }}</span>
-                                    </div>
-                                    
-                                    <div class="character-development-input">
-                                        <label>
-                                            未审查狂级角色数量：
-                                        </label>
-                                        <input type="number" v-model.number="characterDevelopment.reviewS" placeholder="0" min="0">
-                                        <span class="item-value"><img src="icons/crystal.png" class="resource-icon" alt="异方晶"> {{ characterDevelopment.reviewS * 200 }}</span>
-                                    </div>
-                                    
-                                    <div class="character-development-input">
-                                        <label>
-                                            未审查危级角色数量：
-                                        </label>
-                                        <input type="number" v-model.number="characterDevelopment.reviewA" placeholder="0" min="0">
-                                        <span class="item-value"><img src="icons/crystal.png" class="resource-icon" alt="异方晶"> {{ characterDevelopment.reviewA * 150 }}</span>
-                                    </div>
-                                    
-                                    <button 
-                                        class="character-development-btn" 
-                                        :class="{ active: characterDevelopment.haila }"
-                                        @click="characterDevelopment.haila = !characterDevelopment.haila">
-                                        {{ characterDevelopment.haila ? '已审查海拉！' : '未审查海拉！' }}<img src="icons/crystal.png" class="resource-icon" alt="异方晶">100
-                                     </button>
                                 </div>
+                                
+                                <div class="character-development-input">
+                                    <span class="character-development-label">
+                                        未满混响狂级角色数量：
+                                        <span class="character-development-value">
+                                            <img :src="crystalIcon" class="resource-icon" alt="异方晶"> {{ characterDevelopment.maxReverbS * 210 }}
+                                        </span>
+                                    </span>
+                                    <div class="character-development-controls">
+                                        <button class="character-dev-btn" @click="adjustCharacterDev('maxReverbS', -1)">−</button>
+                                        <span class="character-dev-count">{{ characterDevelopment.maxReverbS }}</span>
+                                        <button class="character-dev-btn" @click="adjustCharacterDev('maxReverbS', 1)">+</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="character-development-input">
+                                    <span class="character-development-label">
+                                        未满混响危级角色数量：
+                                        <span class="character-development-value">
+                                            <img :src="crystalIcon" class="resource-icon" alt="异方晶"> {{ characterDevelopment.maxReverbA * 60 }}
+                                        </span>
+                                    </span>
+                                    <div class="character-development-controls">
+                                        <button class="character-dev-btn" @click="adjustCharacterDev('maxReverbA', -1)">−</button>
+                                        <span class="character-dev-count">{{ characterDevelopment.maxReverbA }}</span>
+                                        <button class="character-dev-btn" @click="adjustCharacterDev('maxReverbA', 1)">+</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="character-development-input">
+                                    <span class="character-development-label">
+                                        未满混响普级角色数量：
+                                        <span class="character-development-value">
+                                            <img :src="crystalIcon" class="resource-icon" alt="异方晶"> {{ characterDevelopment.maxReverbB * 20 }}
+                                        </span>
+                                    </span>
+                                    <div class="character-development-controls">
+                                        <button class="character-dev-btn" @click="adjustCharacterDev('maxReverbB', -1)">−</button>
+                                        <span class="character-dev-count">{{ characterDevelopment.maxReverbB }}</span>
+                                        <button class="character-dev-btn" @click="adjustCharacterDev('maxReverbB', 1)">+</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="character-development-input">
+                                    <span class="character-development-label">
+                                        未审查狂级角色数量：
+                                        <span class="character-development-value">
+                                            <img :src="crystalIcon" class="resource-icon" alt="异方晶"> {{ characterDevelopment.reviewS * 200 }}
+                                        </span>
+                                    </span>
+                                    <div class="character-development-controls">
+                                        <button class="character-dev-btn" @click="adjustCharacterDev('reviewS', -1)">−</button>
+                                        <span class="character-dev-count">{{ characterDevelopment.reviewS }}</span>
+                                        <button class="character-dev-btn" @click="adjustCharacterDev('reviewS', 1)">+</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="character-development-input">
+                                    <span class="character-development-label">
+                                        未审查危级角色数量：
+                                        <span class="character-development-value">
+                                            <img :src="crystalIcon" class="resource-icon" alt="异方晶"> {{ characterDevelopment.reviewA * 150 }}
+                                        </span>
+                                    </span>
+                                    <div class="character-development-controls">
+                                        <button class="character-dev-btn" @click="adjustCharacterDev('reviewA', -1)">−</button>
+                                        <span class="character-dev-count">{{ characterDevelopment.reviewA }}</span>
+                                        <button class="character-dev-btn" @click="adjustCharacterDev('reviewA', 1)">+</button>
+                                    </div>
+                                </div>
+                                
+                                <button 
+                                    class="character-development-btn" 
+                                    :class="{ active: characterDevelopment.haylaReviewed }"
+                                    @click="toggleHaylaReview">
+                                    {{ characterDevelopment.haylaReviewed ? '已审查海拉！' : '未审查海拉！' }}
+                                </button>
                             </div>
 
                             <!-- 狄斯城（主线） -->
                             <div class="sub-section">
-                                <div class="section-header">
-                                    <h3 class="sub-title">狄斯城（主线）</h3>
-                                    <div class="module-switch">
-                                        <label class="switch">
-                                            <input type="checkbox" v-model="moduleEnabled.mainStory">
-                                            <span class="slider"></span>
-                                        </label>
-                                        <span class="module-switch-label">{{ moduleEnabled.mainStory ? '计算此模块' : '不计算此模块' }}</span>
-                                    </div>
-                                </div>
+                                <h3 class="sub-title">狄斯城（主线）</h3>
                                 <div class="main-story-buttons">
                                     <div class="main-story-columns">
                                         <div class="main-story-column">
@@ -1873,55 +1939,55 @@
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.chaosBeyondA }"
                                                 @click="toggleMainStory('chaosBeyondA')">
-                                                01混沌彼岸A<img src="icons/crystal.png" class="resource-icon" alt="异方晶">895<img src="icons/ticket.png" class="resource-icon" alt="搜索令">1
+                                                01混沌彼岸A<img :src="crystalIcon" class="resource-icon" alt="异方晶">895<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                             <button 
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.chaosBeyondB }"
                                                 @click="toggleMainStory('chaosBeyondB')">
-                                                02混沌彼岸B<img src="icons/crystal.png" class="resource-icon" alt="异方晶">1130<img src="icons/ticket.png" class="resource-icon" alt="搜索令">1
+                                                02混沌彼岸B<img :src="crystalIcon" class="resource-icon" alt="异方晶">1130<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                             <button 
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.unownedCavernA }"
                                                 @click="toggleMainStory('unownedCavernA')">
-                                                03无主地窟A<img src="icons/crystal.png" class="resource-icon" alt="异方晶">1075<img src="icons/ticket.png" class="resource-icon" alt="搜索令">1
+                                                03无主地窟A<img :src="crystalIcon" class="resource-icon" alt="异方晶">1075<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                             <button 
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.unownedCavernB }"
                                                 @click="toggleMainStory('unownedCavernB')">
-                                                04无主地窟B<img src="icons/crystal.png" class="resource-icon" alt="异方晶">1180<img src="icons/ticket.png" class="resource-icon" alt="搜索令">1
+                                                04无主地窟B<img :src="crystalIcon" class="resource-icon" alt="异方晶">1180<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                             <button 
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.kiranSquareA }"
                                                 @click="toggleMainStory('kiranSquareA')">
-                                                05奇兰广场A<img src="icons/crystal.png" class="resource-icon" alt="异方晶">1165<img src="icons/ticket.png" class="resource-icon" alt="搜索令">1
+                                                05奇兰广场A<img :src="crystalIcon" class="resource-icon" alt="异方晶">1165<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                             <button 
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.kiranSquareB }"
                                                 @click="toggleMainStory('kiranSquareB')">
-                                                06奇兰广场B<img src="icons/crystal.png" class="resource-icon" alt="异方晶">1130<img src="icons/ticket.png" class="resource-icon" alt="搜索令">1
+                                                06奇兰广场B<img :src="crystalIcon" class="resource-icon" alt="异方晶">1130<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                             <button 
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.carnivalA }"
                                                 @click="toggleMainStory('carnivalA')">
-                                                07嘉年华A<img src="icons/crystal.png" class="resource-icon" alt="异方晶">1130<img src="icons/ticket.png" class="resource-icon" alt="搜索令">1
+                                                07嘉年华A<img :src="crystalIcon" class="resource-icon" alt="异方晶">1130<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                             <button 
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.carnivalB }"
                                                 @click="toggleMainStory('carnivalB')">
-                                                08嘉年华B<img src="icons/crystal.png" class="resource-icon" alt="异方晶">835<img src="icons/ticket.png" class="resource-icon" alt="搜索令">1
+                                                08嘉年华B<img :src="crystalIcon" class="resource-icon" alt="异方晶">835<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                             <button 
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.refugeeCampA }"
                                                 @click="toggleMainStory('refugeeCampA')">
-                                                09流民寨A<img src="icons/crystal.png" class="resource-icon" alt="异方晶">1025<img src="icons/ticket.png" class="resource-icon" alt="搜索令">1
+                                                09流民寨A<img :src="crystalIcon" class="resource-icon" alt="异方晶">1025<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                         </div>
                                         <div class="main-story-column">
@@ -1929,49 +1995,49 @@
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.refugeeCampB }"
                                                 @click="toggleMainStory('refugeeCampB')">
-                                                10流民寨B<img src="icons/crystal.png" class="resource-icon" alt="异方晶">1095<img src="icons/ticket.png" class="resource-icon" alt="搜索令">1
+                                                10流民寨B<img :src="crystalIcon" class="resource-icon" alt="异方晶">1095<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                             <button 
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.muddyDarkTrapA }"
                                                 @click="toggleMainStory('muddyDarkTrapA')">
-                                                11沉浊暗阱A<img src="icons/crystal.png" class="resource-icon" alt="异方晶">1130<img src="icons/ticket.png" class="resource-icon" alt="搜索令">1
+                                                11沉浊暗阱A<img :src="crystalIcon" class="resource-icon" alt="异方晶">1130<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                             <button 
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.muddyDarkTrapB }"
                                                 @click="toggleMainStory('muddyDarkTrapB')">
-                                                12沉浊暗阱B<img src="icons/crystal.png" class="resource-icon" alt="异方晶">505<img src="icons/ticket.png" class="resource-icon" alt="搜索令">1
+                                                12沉浊暗阱B<img :src="crystalIcon" class="resource-icon" alt="异方晶">505<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                             <button 
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.highTowerBlackRing }"
                                                 @click="toggleMainStory('highTowerBlackRing')">
-                                                13高塔黑环<img src="icons/crystal.png" class="resource-icon" alt="异方晶">1880<img src="icons/ticket.png" class="resource-icon" alt="搜索令">2
+                                                13高塔黑环<img :src="crystalIcon" class="resource-icon" alt="异方晶">1880<img :src="ticketIcon" class="resource-icon" alt="搜索令">2
                                             </button>
                                             <button 
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.darkSurgeA }"
                                                 @click="toggleMainStory('darkSurgeA')">
-                                                N1暗涌A<img src="icons/crystal.png" class="resource-icon" alt="异方晶">905<img src="icons/ticket.png" class="resource-icon" alt="搜索令">1
+                                                N1暗涌A<img :src="crystalIcon" class="resource-icon" alt="异方晶">905<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                             <button 
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.darkSurgeB }"
                                                 @click="toggleMainStory('darkSurgeB')">
-                                                N2暗涌B<img src="icons/crystal.png" class="resource-icon" alt="异方晶">905<img src="icons/ticket.png" class="resource-icon" alt="搜索令">1
+                                                N2暗涌B<img :src="crystalIcon" class="resource-icon" alt="异方晶">905<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                             <button 
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.goldFeastA }"
                                                 @click="toggleMainStory('goldFeastA')">
-                                                N3碎金盛宴A<img src="icons/crystal.png" class="resource-icon" alt="异方晶">800<img src="icons/ticket.png" class="resource-icon" alt="搜索令">1
+                                                N3碎金盛宴A<img :src="crystalIcon" class="resource-icon" alt="异方晶">800<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                             <button 
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.goldFeastB }"
                                                 @click="toggleMainStory('goldFeastB')">
-                                                N4碎金盛宴B<img src="icons/crystal.png" class="resource-icon" alt="异方晶">1080<img src="icons/ticket.png" class="resource-icon" alt="搜索令">1
+                                                N4碎金盛宴B<img :src="crystalIcon" class="resource-icon" alt="异方晶">1080<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                         </div>
                                     </div>
@@ -1980,16 +2046,7 @@
 
                             <!-- 狄斯暗影（EX） -->
                             <div class="sub-section">
-                                <div class="section-header">
-                                    <h3 class="sub-title">狄斯暗影（EX）</h3>
-                                    <div class="module-switch">
-                                        <label class="switch">
-                                            <input type="checkbox" v-model="moduleEnabled.darkShadowEx">
-                                            <span class="slider"></span>
-                                        </label>
-                                        <span class="module-switch-label">{{ moduleEnabled.darkShadowEx ? '计算此模块' : '不计算此模块' }}</span>
-                                    </div>
-                                </div>
+                                <h3 class="sub-title">狄斯暗影（EX）</h3>
                                 <div class="ex-buttons">
                                     <div class="ex-columns">
                                         <div class="ex-column">
@@ -1997,25 +2054,25 @@
                                                 class="ex-btn" 
                                                 :class="{ active: darkShadowEx.chaosBeyond }"
                                                 @click="toggleDarkShadowEx('chaosBeyond')">
-                                                EX01混沌彼岸·暗影<img src="icons/crystal.png" class="resource-icon" alt="异方晶">720
+                                                EX01混沌彼岸·暗影<img :src="crystalIcon" class="resource-icon" alt="异方晶">720
                                             </button>
                                             <button 
                                                 class="ex-btn" 
                                                 :class="{ active: darkShadowEx.unownedCavern }"
                                                 @click="toggleDarkShadowEx('unownedCavern')">
-                                                EX02无主地窟·暗影<img src="icons/crystal.png" class="resource-icon" alt="异方晶">720
+                                                EX02无主地窟·暗影<img :src="crystalIcon" class="resource-icon" alt="异方晶">720
                                             </button>
                                             <button 
                                                 class="ex-btn" 
                                                 :class="{ active: darkShadowEx.kiranSquare }"
                                                 @click="toggleDarkShadowEx('kiranSquare')">
-                                                EX03奇兰广场·暗影<img src="icons/crystal.png" class="resource-icon" alt="异方晶">590
+                                                EX03奇兰广场·暗影<img :src="crystalIcon" class="resource-icon" alt="异方晶">590
                                             </button>
                                             <button 
                                                 class="ex-btn" 
                                                 :class="{ active: darkShadowEx.carnival }"
                                                 @click="toggleDarkShadowEx('carnival')">
-                                                EX04嘉年华·暗影<img src="icons/crystal.png" class="resource-icon" alt="异方晶">650
+                                                EX04嘉年华·暗影<img :src="crystalIcon" class="resource-icon" alt="异方晶">650
                                             </button>
                                         </div>
                                         <div class="ex-column">
@@ -2023,25 +2080,25 @@
                                                 class="ex-btn" 
                                                 :class="{ active: darkShadowEx.highTowerBlackRing }"
                                                 @click="toggleDarkShadowEx('highTowerBlackRing')">
-                                                EX05高塔黑环·暗影<img src="icons/crystal.png" class="resource-icon" alt="异方晶">650
+                                                EX05高塔黑环·暗影<img :src="crystalIcon" class="resource-icon" alt="异方晶">650
                                             </button>
                                             <button 
                                                 class="ex-btn" 
                                                 :class="{ active: darkShadowEx.luxuryFeastFog }"
                                                 @click="toggleDarkShadowEx('luxuryFeastFog')">
-                                                EX06奢宴浓雾·暗影<img src="icons/crystal.png" class="resource-icon" alt="异方晶">650
+                                                EX06奢宴浓雾·暗影<img :src="crystalIcon" class="resource-icon" alt="异方晶">650
                                             </button>
                                             <button 
                                                 class="ex-btn" 
                                                 :class="{ active: darkShadowEx.drowningRainCity }"
                                                 @click="toggleDarkShadowEx('drowningRainCity')">
-                                                EX07溺雨垂城·暗影<img src="icons/crystal.png" class="resource-icon" alt="异方晶">650
+                                                EX07溺雨垂城·暗影<img :src="crystalIcon" class="resource-icon" alt="异方晶">650
                                             </button>
                                             <button 
                                                 class="ex-btn" 
                                                 :class="{ active: darkShadowEx.goldFeast }"
                                                 @click="toggleDarkShadowEx('goldFeast')">
-                                                EX08碎金盛宴·暗影<img src="icons/crystal.png" class="resource-icon" alt="异方晶">650
+                                                EX08碎金盛宴·暗影<img :src="crystalIcon" class="resource-icon" alt="异方晶">650
                                             </button>
                                         </div>
                                     </div>
@@ -2050,119 +2107,83 @@
 
                             <!-- 记忆风暴 -->
                             <div class="sub-section">
-                                <div class="section-header">
-                                    <h3 class="sub-title">记忆风暴</h3>
-                                    <div class="module-switch">
-                                        <label class="switch">
-                                            <input type="checkbox" v-model="moduleEnabled.memoryStorm">
-                                            <span class="slider"></span>
-                                        </label>
-                                        <span class="module-switch-label">{{ moduleEnabled.memoryStorm ? '计算此模块' : '不计算此模块' }}</span>
-                                    </div>
-                                </div>
+                                <h3 class="sub-title">记忆风暴</h3>
                                 <div class="memory-storm-buttons">
                                     <button 
                                         class="memory-storm-btn" 
                                         :class="{ active: memoryStorm.memoryAnomaly }"
                                         @click="toggleMemoryStorm('memoryAnomaly')">
-                                        记忆畸点<img src="icons/crystal.png" class="resource-icon" alt="异方晶">350
+                                        记忆畸点<img :src="crystalIcon" class="resource-icon" alt="异方晶">350
                                     </button>
                                     <button 
                                         class="memory-storm-btn" 
                                         :class="{ active: memoryStorm.impressionAnomaly }"
                                         @click="toggleMemoryStorm('impressionAnomaly')">
-                                        印象畸点<img src="icons/crystal.png" class="resource-icon" alt="异方晶">350
+                                        印象畸点<img :src="crystalIcon" class="resource-icon" alt="异方晶">350
                                     </button>
                                     <button 
                                         class="memory-storm-btn" 
                                         :class="{ active: memoryStorm.echoAnomaly }"
                                         @click="toggleMemoryStorm('echoAnomaly')">
-                                        残响畸点<img src="icons/crystal.png" class="resource-icon" alt="异方晶">350
+                                        残响畸点<img :src="crystalIcon" class="resource-icon" alt="异方晶">350
                                     </button>
                                 </div>
                             </div>
 
                             <!-- 污染之巢 -->
                             <div class="sub-section">
-                                <div class="section-header">
-                                    <h3 class="sub-title">污染之巢</h3>
-                                    <div class="module-switch">
-                                        <label class="switch">
-                                            <input type="checkbox" v-model="moduleEnabled.pollutionNest">
-                                            <span class="slider"></span>
-                                        </label>
-                                        <span class="module-switch-label">{{ moduleEnabled.pollutionNest ? '计算此模块' : '不计算此模块' }}</span>
-                                    </div>
-                                </div>
+                                <h3 class="sub-title">污染之巢</h3>
                                 <div class="pollution-nest-buttons">
                                     <button 
                                         class="pollution-nest-btn" 
                                         :class="{ active: pollutionNest.forbiddenZoneProbe }"
                                         @click="togglePollutionNest('forbiddenZoneProbe')">
-                                        禁区探查<img src="icons/crystal.png" class="resource-icon" alt="异方晶">350
+                                        禁区探查<img :src="crystalIcon" class="resource-icon" alt="异方晶">350
                                     </button>
                                     <button 
                                         class="pollution-nest-btn" 
                                         :class="{ active: pollutionNest.extremeDomainSearch }"
                                         @click="togglePollutionNest('extremeDomainSearch')">
-                                        极域搜寻<img src="icons/crystal.png" class="resource-icon" alt="异方晶">210
+                                        极域搜寻<img :src="crystalIcon" class="resource-icon" alt="异方晶">210
                                     </button>
                                 </div>
                             </div>
 
                             <!-- 清剿行动 -->
                             <div class="sub-section">
-                                <div class="section-header">
-                                    <h3 class="sub-title">清剿行动</h3>
-                                    <div class="module-switch">
-                                        <label class="switch">
-                                            <input type="checkbox" v-model="moduleEnabled.cleanupOperation">
-                                            <span class="slider"></span>
-                                        </label>
-                                        <span class="module-switch-label">{{ moduleEnabled.cleanupOperation ? '计算此模块' : '不计算此模块' }}</span>
-                                    </div>
-                                </div>
+                                <h3 class="sub-title">清剿行动</h3>
                                 <div class="cleanup-operation-buttons">
                                     <button 
                                         class="cleanup-operation-btn" 
                                         :class="{ active: cleanupOperation.goldRush }"
                                         @click="toggleCleanupOperation('goldRush')">
-                                        淘金狂热<img src="icons/crystal.png" class="resource-icon" alt="异方晶">350
+                                        淘金狂热<img :src="crystalIcon" class="resource-icon" alt="异方晶">350
                                     </button>
                                     <button 
                                         class="cleanup-operation-btn" 
                                         :class="{ active: cleanupOperation.ominousSeed }"
                                         @click="toggleCleanupOperation('ominousSeed')">
-                                        恶兆之种<img src="icons/crystal.png" class="resource-icon" alt="异方晶">350
+                                        恶兆之种<img :src="crystalIcon" class="resource-icon" alt="异方晶">350
                                     </button>
                                 </div>
                             </div>
 
                             <!-- 帕尔马废墟 -->
                             <div class="sub-section">
-                                <div class="section-header">
-                                    <h3 class="sub-title">帕尔马废墟</h3>
-                                    <div class="module-switch">
-                                        <label class="switch">
-                                            <input type="checkbox" v-model="moduleEnabled.palmaRuins">
-                                            <span class="slider"></span>
-                                        </label>
-                                        <span class="module-switch-label">{{ moduleEnabled.palmaRuins ? '计算此模块' : '不计算此模块' }}</span>
-                                    </div>
-                                </div>
+                                <h3 class="sub-title">帕尔马废墟</h3>
                                 <div class="palma-ruins-buttons">
                                     <div class="palma-ruins-row">
                                         <button 
                                             class="palma-ruins-btn" 
                                             :class="{ active: palmaRuins.tenacious }"
                                             @click="togglePalmaRuins('tenacious')">
-                                            坚韧<img src="icons/crystal.png" class="resource-icon" alt="异方晶">280
+                                            坚韧<img :src="crystalIcon" class="resource-icon" alt="异方晶">280
                                         </button>
                                         <button 
                                             class="palma-ruins-btn" 
                                             :class="{ active: palmaRuins.berserk }"
                                             @click="togglePalmaRuins('berserk')">
-                                            狂暴<img src="icons/crystal.png" class="resource-icon" alt="异方晶">280
+                                            狂暴<img :src="crystalIcon" class="resource-icon" alt="异方晶">280
                                         </button>
                                     </div>
                                     <div class="palma-ruins-row">
@@ -2170,13 +2191,13 @@
                                             class="palma-ruins-btn" 
                                             :class="{ active: palmaRuins.mysterious }"
                                             @click="togglePalmaRuins('mysterious')">
-                                            诡秘<img src="icons/crystal.png" class="resource-icon" alt="异方晶">280
+                                            诡秘<img :src="crystalIcon" class="resource-icon" alt="异方晶">280
                                         </button>
                                         <button 
                                             class="palma-ruins-btn" 
                                             :class="{ active: palmaRuins.precise }"
                                             @click="togglePalmaRuins('precise')">
-                                            精准<img src="icons/crystal.png" class="resource-icon" alt="异方晶">280
+                                            精准<img :src="crystalIcon" class="resource-icon" alt="异方晶">280
                                         </button>
                                     </div>
                                     <div class="palma-ruins-row">
@@ -2184,72 +2205,14 @@
                                             class="palma-ruins-btn" 
                                             :class="{ active: palmaRuins.supernatural }"
                                             @click="togglePalmaRuins('supernatural')">
-                                            异能<img src="icons/crystal.png" class="resource-icon" alt="异方晶">280
+                                            异能<img :src="crystalIcon" class="resource-icon" alt="异方晶">280
                                         </button>
                                         <button 
                                             class="palma-ruins-btn" 
                                             :class="{ active: palmaRuins.inspiration }"
                                             @click="togglePalmaRuins('inspiration')">
-                                            启迪<img src="icons/crystal.png" class="resource-icon" alt="异方晶">280
+                                            启迪<img :src="crystalIcon" class="resource-icon" alt="异方晶">280
                                         </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 新增：氪金资源模块 -->
-                    <div class="recharge-section card new-module-section">
-                        <h2 @click="toggleSection('recharge')" class="section-header">
-                            💳 氪金资源
-                            <span class="collapse-icon">{{ sections.recharge ? '−' : '+' }}</span>
-                        </h2>
-                        <div v-if="sections.recharge" class="section-content">
-                            <div class="sub-section">
-                                <h3 class="sub-title">充值选项</h3>
-                                <div class="resource-vertical">
-                                    <div class="resource-input-vertical">
-                                        <label>
-                                            <img src="icons/crystal.png" class="resource-icon" alt="异方晶"> 充值异方晶：
-                                        </label>
-                                        <input type="number" v-model.number="rechargeResources.crystal" placeholder="0" min="0">
-                                    </div>
-                                    <div class="resource-input-vertical">
-                                        <label>
-                                            <img src="icons/ticket.png" class="resource-icon" alt="搜索令"> 充值搜索令：
-                                        </label>
-                                        <input type="number" v-model.number="rechargeResources.tickets" placeholder="0" min="0">
-                                    </div>
-                                    <div class="resource-input-vertical">
-                                        <label>充值金额（元）：</label>
-                                        <input type="number" v-model.number="rechargeResources.money" placeholder="0" min="0">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 新增：其他（估算）模块 -->
-                    <div class="other-section card new-module-section">
-                        <h2 @click="toggleSection('other')" class="section-header">
-                            📝 其他（估算）
-                            <span class="collapse-icon">{{ sections.other ? '−' : '+' }}</span>
-                        </h2>
-                        <div v-if="sections.other" class="section-content">
-                            <div class="sub-section">
-                                <h3 class="sub-title">其他资源估算</h3>
-                                <div class="resource-vertical">
-                                    <div class="resource-input-vertical">
-                                        <label>
-                                            <img src="icons/crystal.png" class="resource-icon" alt="异方晶"> 其他异方晶：
-                                        </label>
-                                        <input type="number" v-model.number="otherResources.crystal" placeholder="0" min="0">
-                                    </div>
-                                    <div class="resource-input-vertical">
-                                        <label>
-                                            <img src="icons/ticket.png" class="resource-icon" alt="搜索令"> 其他搜索令：
-                                        </label>
-                                        <input type="number" v-model.number="otherResources.tickets" placeholder="0" min="0">
                                     </div>
                                 </div>
                             </div>
@@ -2266,84 +2229,61 @@
         createApp({
             name: 'GachaCalculator',
             data() {
-                const savedData = JSON.parse(localStorage.getItem('gachaCalculatorData')) || {};
+                const savedData = JSON.parse(localStorage.getItem('gachaCalculatorData'));
                 
                 return {
-                    // 图标路径
+                    // 图标路径 - 使用绝对路径
                     crystalIcon: 'icons/crystal.png',
                     ticketIcon: 'icons/ticket.png',
                     redCrystalIcon: 'icons/red_crystal.png',
                     premiumCrystalIcon: 'icons/premium_crystal.png',
                     yellowTicketIcon: 'icons/yellow_ticket.png',
-                    hlIcon: 'icons/hl.gif',
-                    
-                    // 饼状图颜色
-                    categoryColors: ['#1890ff', '#52c41a', '#faad14', '#722ed1', '#eb2f96', '#13c2c2'],
-                    
-                    // 新增模块数据
-                    activityResources: savedData.activityResources || {
-                        crystal: 0,
-                        tickets: 0
-                    },
-                    rechargeResources: savedData.rechargeResources || {
-                        crystal: 0,
-                        tickets: 0,
-                        money: 0
-                    },
-                    otherResources: savedData.otherResources || {
-                        crystal: 0,
-                        tickets: 0
-                    },
-                    
-                    // 折叠面板状态
-                    sections: {
-                        timeTotal: true,
-                        resources: true,
-                        daily: true,
-                        activity: true,
-                        potential: true,
-                        recharge: true,
-                        other: true
-                    },
+                    hlIcon:'icons/hl.gif',
                     
                     // 原有数据保持不变
-                    resources: savedData.resources || {
+                    resources: savedData?.resources || {
                         crystal: 0,
                         premiumCrystal: 0,
                         tickets: 0
                     },
-                    selectedTime: savedData.selectedTime || 'nextVersion',
-                    calculateToPoolEnd: savedData.calculateToPoolEnd || false,
-                    weeklyCompleted: savedData.weeklyCompleted || false,
-                    darkZoneSweepOnly: savedData.darkZoneSweepOnly || false,
-                    darkZoneCompleted: savedData.darkZoneCompleted || false,
-                    darkZoneFirstCompleted: savedData.darkZoneFirstCompleted || false,
-                    trackingExchanged: savedData.trackingExchanged || false,
-                    friendshipExchanged: savedData.friendshipExchanged || false,
-                    usePremiumCrystal: savedData.usePremiumCrystal || false,
-                    skinReserve: savedData.skinReserve || {
+                    selectedTime: savedData?.selectedTime || 'nextVersion',
+                    calculateToPoolEnd: savedData?.calculateToPoolEnd || false,
+                    weeklyCompleted: savedData?.weeklyCompleted || false,
+                    darkZoneSweepOnly: savedData?.darkZoneSweepOnly || false,
+                    darkZoneCompleted: savedData?.darkZoneCompleted || false,
+                    darkZoneFirstCompleted: savedData?.darkZoneFirstCompleted || false,
+                    trackingExchanged: savedData?.trackingExchanged || false,
+                    friendshipExchanged: savedData?.friendshipExchanged || false,
+                    usePremiumCrystal: savedData?.usePremiumCrystal || false,
+                    skinReserve: savedData?.skinReserve || {
                         skin880: 0,
                         skin1280: 0,
                         skin2580: 0
                     },
-                    customAdjustment: savedData.customAdjustment || 0,
+                    customAdjustment: savedData?.customAdjustment || 0,
+                    sections: {
+                        resources: true,
+                        daily: true,
+                        potential: true,
+                        pullSummary: true
+                    },
                     versionWeeks: 4,
                     
-                    emotionDetectionCompleted: savedData.emotionDetectionCompleted || false,
-                    dailyShareCompleted: savedData.dailyShareCompleted || false,
-                    trackingCertificationCount: savedData.trackingCertificationCount || 0,
-                    useTrackingCertification: savedData.useTrackingCertification || false,
-                    trainingModes: savedData.trainingModes || {
+                    emotionDetectionCompleted: savedData?.emotionDetectionCompleted || false,
+                    dailyShareCompleted: savedData?.dailyShareCompleted || false,
+                    trackingCertificationCount: savedData?.trackingCertificationCount || 0,
+                    useTrackingCertification: savedData?.useTrackingCertification || false,
+                    trainingModes: savedData?.trainingModes || {
                         steady: false,
                         fluctuating: false,
                         outOfControl: false,
                         crazy: false
                     },
                     
-                    nightmareScore: savedData.nightmareScore || 0,
-                    nightmareSeaCompleted: savedData.nightmareSeaCompleted || false,
+                    nightmareScore: savedData?.nightmareScore || 0,
+                    nightmareSeaCompleted: savedData?.nightmareSeaCompleted || false,
                     
-                    dataGap: savedData.dataGap || {
+                    dataGap: savedData?.dataGap || {
                         targets: {
                             missionComplete: false,
                             missionCount: false,
@@ -2360,8 +2300,8 @@
                         }
                     },
 
-                    // 其他模块数据保持不变
-                    mainStory: savedData.mainStory || {
+                    // 新增模块数据
+                    mainStory: savedData?.mainStory || {
                         chaosBeyondA: false,
                         chaosBeyondB: false,
                         unownedCavernA: false,
@@ -2380,7 +2320,9 @@
                         goldFeastA: false,
                         goldFeastB: false
                     },
-                    darkShadowEx: savedData.darkShadowEx || {
+
+                    // 狄斯暗影（EX）数据
+                    darkShadowEx: savedData?.darkShadowEx || {
                         chaosBeyond: false,
                         unownedCavern: false,
                         kiranSquare: false,
@@ -2390,20 +2332,24 @@
                         drowningRainCity: false,
                         goldFeast: false
                     },
-                    memoryStorm: savedData.memoryStorm || {
+
+                    memoryStorm: savedData?.memoryStorm || {
                         memoryAnomaly: false,
                         impressionAnomaly: false,
                         echoAnomaly: false
                     },
-                    pollutionNest: savedData.pollutionNest || {
+
+                    pollutionNest: savedData?.pollutionNest || {
                         forbiddenZoneProbe: false,
                         extremeDomainSearch: false
                     },
-                    cleanupOperation: savedData.cleanupOperation || {
+
+                    cleanupOperation: savedData?.cleanupOperation || {
                         goldRush: false,
                         ominousSeed: false
                     },
-                    palmaRuins: savedData.palmaRuins || {
+
+                    palmaRuins: savedData?.palmaRuins || {
                         tenacious: false,
                         berserk: false,
                         mysterious: false,
@@ -2411,24 +2357,22 @@
                         supernatural: false,
                         inspiration: false
                     },
-                    characterDevelopment: savedData.characterDevelopment || {
+                    
+                    // 新增角色养成模块数据
+                    characterDevelopment: savedData?.characterDevelopment || {
                         tier3: 0,
                         maxReverbS: 0,
                         maxReverbA: 0,
                         maxReverbB: 0,
                         reviewS: 0,
                         reviewA: 0,
-                        haila: false
+                        haylaReviewed: false
                     },
-                    moduleEnabled: savedData.moduleEnabled || {
+                    
+                    // 模块开关数据
+                    modules: savedData?.modules || {
                         nightmare: true,
-                        characterDevelopment: true,
-                        mainStory: true,
-                        darkShadowEx: true,
-                        memoryStorm: true,
-                        pollutionNest: true,
-                        cleanupOperation: true,
-                        palmaRuins: true
+                        characterDevelopment: true
                     },
                     
                     nightmareRewards: [
@@ -2470,196 +2414,6 @@
                 }
             },
             computed: {
-                // 移动端检测
-                isMobile() {
-                    return window.innerWidth <= 768;
-                },
-                
-                // 分类汇总计算
-                summaryCategories() {
-                    const categories = [
-                        {
-                            key: 'current',
-                            label: '现有',
-                            crystal: this.currentCrystalTotal,
-                            tickets: this.currentTicketsTotal,
-                            pulls: this.currentPulls
-                        },
-                        {
-                            key: 'daily',
-                            label: '日常',
-                            crystal: this.dailyCrystalTotal,
-                            tickets: this.dailyTicketsTotal,
-                            pulls: this.dailyPulls
-                        },
-                        {
-                            key: 'activity',
-                            label: '活动',
-                            crystal: this.activityCrystalTotal,
-                            tickets: this.activityTicketsTotal,
-                            pulls: this.activityPulls
-                        },
-                        {
-                            key: 'potential',
-                            label: '潜在',
-                            crystal: this.potentialCrystalTotal,
-                            tickets: this.potentialTicketsTotal,
-                            pulls: this.potentialPulls
-                        },
-                        {
-                            key: 'recharge',
-                            label: '氪金',
-                            crystal: this.rechargeCrystalTotal,
-                            tickets: this.rechargeTicketsTotal,
-                            pulls: this.rechargePulls
-                        },
-                        {
-                            key: 'other',
-                            label: '其他',
-                            crystal: this.otherCrystalTotal,
-                            tickets: this.otherTicketsTotal,
-                            pulls: this.otherPulls
-                        }
-                    ];
-
-                    const totalPulls = this.totalPulls;
-                    
-                    // 计算百分比
-                    categories.forEach(category => {
-                        category.percentage = totalPulls > 0 ? 
-                            ((category.pulls / totalPulls) * 100).toFixed(1) : '0.0';
-                    });
-
-                    return categories;
-                },
-
-                // 各个分类的抽数计算
-                currentPulls() {
-                    const crystal = this.currentCrystalTotal;
-                    const tickets = this.currentTicketsTotal;
-                    return Math.floor(crystal / 180) + tickets;
-                },
-
-                dailyPulls() {
-                    const crystal = this.dailyCrystalTotal;
-                    const tickets = this.dailyTicketsTotal;
-                    return Math.floor(crystal / 180) + tickets;
-                },
-
-                activityPulls() {
-                    const crystal = this.activityCrystalTotal;
-                    const tickets = this.activityTicketsTotal;
-                    return Math.floor(crystal / 180) + tickets;
-                },
-
-                potentialPulls() {
-                    const crystal = this.potentialCrystalTotal;
-                    const tickets = this.potentialTicketsTotal;
-                    return Math.floor(crystal / 180) + tickets;
-                },
-
-                rechargePulls() {
-                    const crystal = this.rechargeCrystalTotal;
-                    const tickets = this.rechargeTicketsTotal;
-                    return Math.floor(crystal / 180) + tickets;
-                },
-
-                otherPulls() {
-                    const crystal = this.otherCrystalTotal;
-                    const tickets = this.otherTicketsTotal;
-                    return Math.floor(crystal / 180) + tickets;
-                },
-
-                // 各个分类的异方晶和搜索令计算
-                currentCrystalTotal() {
-                    const crystal = this.resources.crystal || 0;
-                    const premiumCrystal = this.usePremiumCrystal ? (this.resources.premiumCrystal || 0) : 0;
-                    return crystal + premiumCrystal - this.totalSkinReserve + this.customAdjustment;
-                },
-
-                currentTicketsTotal() {
-                    return this.resources.tickets || 0;
-                },
-
-                dailyCrystalTotal() {
-                    // 日常积累模块的异方晶计算
-                    return this.dailyActiveTotal + 
-                           this.totalWeeklyActive + 
-                           this.totalDarkZone +
-                           this.totalDarkZoneFirst +
-                           this.totalEmotionDetection +
-                           this.totalDailyShare +
-                           this.totalTrackingCertification +
-                           this.trainingRewards.crystal +
-                           this.dataGapRewards;
-                },
-
-                dailyTicketsTotal() {
-                    // 日常积累模块的搜索令计算
-                    return this.totalTrackingExchange + 
-                           this.totalFriendshipExchange + 
-                           this.totalEmotionDetectionTickets +
-                           this.totalTrackingCertificationTickets +
-                           this.trainingRewards.tickets;
-                },
-
-                activityCrystalTotal() {
-                    return this.activityResources.crystal || 0;
-                },
-
-                activityTicketsTotal() {
-                    return this.activityResources.tickets || 0;
-                },
-
-                potentialCrystalTotal() {
-                    // 潜在资源模块的异方晶计算
-                    return (this.moduleEnabled.nightmare ? this.nightmareTotalRewards.crystal : 0) + 
-                           this.characterDevelopmentRewards.crystal + 
-                           this.mainStoryRewards.crystal + 
-                           this.darkShadowExRewards + 
-                           this.memoryStormRewards + 
-                           this.pollutionNestRewards + 
-                           this.cleanupOperationRewards + 
-                           this.palmaRuinsRewards;
-                },
-
-                potentialTicketsTotal() {
-                    // 潜在资源模块的搜索令计算
-                    return (this.moduleEnabled.nightmare ? this.nightmareTotalRewards.tickets : 0) + 
-                           this.mainStoryRewards.tickets;
-                },
-
-                rechargeCrystalTotal() {
-                    return this.rechargeResources.crystal || 0;
-                },
-
-                rechargeTicketsTotal() {
-                    return this.rechargeResources.tickets || 0;
-                },
-
-                otherCrystalTotal() {
-                    return this.otherResources.crystal || 0;
-                },
-
-                otherTicketsTotal() {
-                    return this.otherResources.tickets || 0;
-                },
-
-                // 总抽数和金额
-                totalPulls() {
-                    return this.currentPulls + 
-                           this.dailyPulls + 
-                           this.activityPulls + 
-                           this.potentialPulls + 
-                           this.rechargePulls + 
-                           this.otherPulls;
-                },
-
-                totalMoney() {
-                    return this.rechargeResources.money || 0;
-                },
-
-                // 原有计算属性保持不变
                 daysToNextVersion() {
                     const today = new Date();
                     const targetDate = new Date(2025, 10, 20);
@@ -2682,23 +2436,54 @@
                 },
                 
                 weeklyCount() {
-                    return Math.ceil(this.selectedDays / 7);
+                    const today = new Date();
+                    const targetDate = this.selectedTime === 'nextVersion' 
+                        ? new Date(2025, 10, 20) 
+                        : new Date(2026, 1, 17);
+                    
+                    // 计算从当前周一到目标日期之间的完整周数
+                    const currentMonday = new Date(today);
+                    const dayOfWeek = today.getDay(); // 0是周日，1是周一，...6是周六
+                    const daysToMonday = dayOfWeek === 0 ? 1 : (dayOfWeek === 1 ? 0 : 8 - dayOfWeek);
+                    currentMonday.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+                    
+                    // 计算周数（包含当前周）
+                    const diffTime = targetDate - currentMonday;
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    const diffWeeks = Math.ceil(diffDays / 7);
+                    
+                    return Math.max(1, diffWeeks); // 至少1周
                 },
-                
+
                 remainingWeeklyCount() {
-                    return this.weeklyCompleted ? this.weeklyCount - 1 : this.weeklyCount;
+                    // 如果本周已完成，则从下周开始计算
+                    if (this.weeklyCompleted) {
+                        return Math.max(0, this.weeklyCount - 1);
+                    } else {
+                        return this.weeklyCount;
+                    }
                 },
-                
+
                 remainingShareWeeks() {
-                    return this.dailyShareCompleted ? this.weeklyCount - 1 : this.weeklyCount;
+                    // 分享周数计算逻辑与周常相同
+                    if (this.dailyShareCompleted) {
+                        return Math.max(0, this.weeklyCount - 1);
+                    } else {
+                        return this.weeklyCount;
+                    }
                 },
-                
+
                 remainingShareTotal() {
                     return 60 * this.remainingShareWeeks;
                 },
-                
+
                 remainingDarkZoneWeeks() {
-                    return this.darkZoneCompleted ? this.weeklyCount - 1 : this.weeklyCount;
+                    // 暗域周数计算逻辑与周常相同
+                    if (this.darkZoneCompleted) {
+                        return Math.max(0, this.weeklyCount - 1);
+                    } else {
+                        return this.weeklyCount;
+                    }
                 },
                 
                 darkZonePerWeek() {
@@ -2729,20 +2514,26 @@
                     return this.useTrackingCertification ? this.trackingCertificationCount : 0;
                 },
                 
-                totalSkinReserve() {
-                    return (this.skinReserve.skin880 * 880) + 
-                           (this.skinReserve.skin1280 * 1280) + 
-                           (this.skinReserve.skin2580 * 2580);
+                nightmareCrystalReward() {
+                    return this.modules.nightmare ? this.calculateNightmareRewards().crystal : 0;
+                },
+                
+                nightmareTicketReward() {
+                    return this.modules.nightmare ? this.calculateNightmareRewards().tickets : 0;
+                },
+                
+                nightmareSeaReward() {
+                    return this.nightmareSeaCompleted ? 0 : 930;
                 },
                 
                 totalWeeklyActive() {
-                    const actualWeeks = this.weeklyCompleted ? this.weeklyCount - 1 : this.weeklyCount;
-                    return 150 * actualWeeks;
+                    // 使用剩余周数计算逻辑
+                    return 150 * this.remainingWeeklyCount;
                 },
                 
                 totalDarkZone() {
-                    const actualWeeks = this.darkZoneCompleted ? this.weeklyCount - 1 : this.weeklyCount;
-                    return this.darkZonePerWeek * actualWeeks;
+                    // 使用剩余暗域周数计算逻辑
+                    return this.darkZonePerWeek * this.remainingDarkZoneWeeks;
                 },
                 
                 totalDarkZoneFirst() {
@@ -2758,8 +2549,8 @@
                 },
                 
                 totalDailyShare() {
-                    const actualWeeks = this.dailyShareCompleted ? this.weeklyCount - 1 : this.weeklyCount;
-                    return 60 * actualWeeks;
+                    // 使用剩余分享周数计算逻辑
+                    return 60 * this.remainingShareWeeks;
                 },
                 
                 totalTrackingExchange() {
@@ -2804,6 +2595,15 @@
                     };
                 },
                 
+                nightmareTotalRewards() {
+                    const scoreRewards = this.calculateNightmareRewards();
+                    return {
+                        crystal: scoreRewards.crystal + this.nightmareSeaReward,
+                        tickets: scoreRewards.tickets,
+                        total: scoreRewards.crystal + this.nightmareSeaReward + (scoreRewards.tickets * 180)
+                    };
+                },
+                
                 dataGapRewards() {
                     let crystal = 0;
                     
@@ -2822,57 +2622,8 @@
                     return crystal;
                 },
 
-                nightmareCrystalReward() {
-                    return this.calculateNightmareRewards().crystal;
-                },
-                
-                nightmareTicketReward() {
-                    return this.calculateNightmareRewards().tickets;
-                },
-                
-                nightmareSeaReward() {
-                    return this.nightmareSeaCompleted ? 0 : 930;
-                },
-                
-                nightmareTotalRewards() {
-                    const scoreRewards = this.calculateNightmareRewards();
-                    return {
-                        crystal: scoreRewards.crystal + this.nightmareSeaReward,
-                        tickets: scoreRewards.tickets,
-                        total: scoreRewards.crystal + this.nightmareSeaReward + (scoreRewards.tickets * 180)
-                    };
-                },
-
-                characterDevelopmentRewards() {
-                    if (!this.moduleEnabled.characterDevelopment) {
-                        return { crystal: 0, total: 0 };
-                    }
-
-                    let crystal = 0;
-                    
-                    crystal += this.characterDevelopment.tier3 * 180;
-                    crystal += this.characterDevelopment.maxReverbS * 210;
-                    crystal += this.characterDevelopment.maxReverbA * 60;
-                    crystal += this.characterDevelopment.maxReverbB * 20;
-                    crystal += this.characterDevelopment.reviewS * 200;
-                    crystal += this.characterDevelopment.reviewA * 150;
-                    
-                    // 注意这里：只有当海拉未审查时才计算资源
-                    if (!this.characterDevelopment.haila) {
-                        crystal += 100;
-                    }
-                    
-                    return {
-                        crystal,
-                        total: crystal
-                    };
-                },
-
+                // 新增模块奖励计算
                 mainStoryRewards() {
-                    if (!this.moduleEnabled.mainStory) {
-                        return { crystal: 0, tickets: 0, total: 0 };
-                    }
-
                     let crystal = 0;
                     let tickets = 0;
                     
@@ -2901,11 +2652,8 @@
                     };
                 },
 
+                // 狄斯暗影（EX）奖励计算
                 darkShadowExRewards() {
-                    if (!this.moduleEnabled.darkShadowEx) {
-                        return 0;
-                    }
-
                     let crystal = 0;
                     
                     if (this.darkShadowEx.chaosBeyond) crystal += 720;
@@ -2921,10 +2669,6 @@
                 },
 
                 memoryStormRewards() {
-                    if (!this.moduleEnabled.memoryStorm) {
-                        return 0;
-                    }
-
                     let crystal = 0;
                     
                     if (this.memoryStorm.memoryAnomaly) crystal += 350;
@@ -2935,10 +2679,6 @@
                 },
 
                 pollutionNestRewards() {
-                    if (!this.moduleEnabled.pollutionNest) {
-                        return 0;
-                    }
-
                     let crystal = 0;
                     
                     if (this.pollutionNest.forbiddenZoneProbe) crystal += 350;
@@ -2948,10 +2688,6 @@
                 },
 
                 cleanupOperationRewards() {
-                    if (!this.moduleEnabled.cleanupOperation) {
-                        return 0;
-                    }
-
                     let crystal = 0;
                     
                     if (this.cleanupOperation.goldRush) crystal += 350;
@@ -2961,10 +2697,6 @@
                 },
 
                 palmaRuinsRewards() {
-                    if (!this.moduleEnabled.palmaRuins) {
-                        return 0;
-                    }
-
                     let crystal = 0;
                     
                     if (this.palmaRuins.tenacious) crystal += 280;
@@ -2975,322 +2707,243 @@
                     if (this.palmaRuins.inspiration) crystal += 280;
                     
                     return crystal;
-                }
-            },
-            watch: {
-                // 新增模块的watch
-                activityResources: {
-                    handler(newValue) {
-                        this.saveToLocalStorage();
-                        this.updateChart();
-                    },
-                    deep: true
                 },
-                rechargeResources: {
-                    handler(newValue) {
-                        this.saveToLocalStorage();
-                        this.updateChart();
-                    },
-                    deep: true
+
+                // 角色养成模块奖励计算
+                characterDevelopmentRewards() {
+                    if (!this.modules.characterDevelopment) {
+                        return {
+                            crystal: 0,
+                            total: 0
+                        };
+                    }
+                    
+                    let crystal = 0;
+                    
+                    crystal += this.characterDevelopment.tier3 * 180;
+                    crystal += this.characterDevelopment.maxReverbS * 210;
+                    crystal += this.characterDevelopment.maxReverbA * 60;
+                    crystal += this.characterDevelopment.maxReverbB * 20;
+                    crystal += this.characterDevelopment.reviewS * 200;
+                    crystal += this.characterDevelopment.reviewA * 150;
+                    
+                    if (!this.characterDevelopment.haylaReviewed) {
+                        crystal += 100;
+                    }
+                    
+                    return {
+                        crystal,
+                        total: crystal
+                    };
                 },
-                otherResources: {
-                    handler(newValue) {
-                        this.saveToLocalStorage();
-                        this.updateChart();
-                    },
-                    deep: true
+
+                totalNewModuleRewards() {
+                    return this.mainStoryRewards.total + 
+                           this.darkShadowExRewards + 
+                           this.memoryStormRewards + 
+                           this.pollutionNestRewards + 
+                           this.cleanupOperationRewards + 
+                           this.palmaRuinsRewards +
+                           this.characterDevelopmentRewards.total;
                 },
                 
-                // 原有watch保持不变，但添加updateChart调用
+                totalCrystalIncome() {
+                    return this.dailyActiveTotal + 
+                           this.totalWeeklyActive + 
+                           this.totalDarkZone +
+                           this.totalDarkZoneFirst +
+                           this.totalEmotionDetection +
+                           this.totalDailyShare +
+                           (this.totalTrackingExchange * 180) +
+                           (this.totalFriendshipExchange * 180) +
+                           this.totalTrackingCertification +
+                           this.trainingRewards.total +
+                           this.nightmareTotalRewards.total +
+                           this.dataGapRewards +
+                           this.totalNewModuleRewards;
+                },
+                
+                totalSkinReserve() {
+                    return (this.skinReserve.skin880 * 880) + 
+                           (this.skinReserve.skin1280 * 1280) + 
+                           (this.skinReserve.skin2580 * 2580);
+                },
+                
+                currentPulls() {
+                    const crystal = this.resources.crystal || 0;
+                    const premiumCrystal = this.usePremiumCrystal ? (this.resources.premiumCrystal || 0) : 0;
+                    const tickets = this.resources.tickets || 0;
+                    
+                    const availableCrystal = crystal + premiumCrystal - this.totalSkinReserve + this.customAdjustment;
+                    const crystalPulls = Math.floor(Math.max(0, availableCrystal) / 180);
+                    return crystalPulls + tickets;
+                },
+                
+                totalCrystal() {
+                    const crystal = this.resources.crystal || 0;
+                    const premiumCrystal = this.usePremiumCrystal ? (this.resources.premiumCrystal || 0) : 0;
+                    const tickets = this.resources.tickets || 0;
+                    
+                    return crystal + premiumCrystal + (tickets * 180) + this.totalCrystalIncome - this.totalSkinReserve + this.customAdjustment;
+                },
+                
+                additionalPulls() {
+                    return Math.floor(this.totalCrystalIncome / 180);
+                },
+                
+                futurePulls() {
+                    return this.currentPulls + this.additionalPulls;
+                },
+                
+                totalCrystalSummary() {
+                    const baseCrystal = this.resources.crystal || 0;
+                    const totalIncome = this.totalCrystalIncome;
+                    
+                    return baseCrystal + totalIncome + this.customAdjustment;
+                },
+                
+                totalTicketsSummary() {
+                    const baseTickets = this.resources.tickets || 0;
+                    const additionalTickets = this.totalTrackingExchange + 
+                                             this.totalFriendshipExchange + 
+                                             this.totalEmotionDetectionTickets +
+                                             this.totalTrackingCertificationTickets +
+                                             this.trainingRewards.tickets +
+                                             this.nightmareTotalRewards.tickets +
+                                             this.mainStoryRewards.tickets;
+                    
+                    return baseTickets + additionalTickets;
+                }
+
+            },
+            watch: {
                 resources: {
                     handler(newValue) {
                         this.saveToLocalStorage();
-                        this.updateChart();
                     },
                     deep: true
                 },
                 selectedTime() {
                     this.saveToLocalStorage();
-                    this.updateChart();
                 },
                 calculateToPoolEnd() {
                     this.saveToLocalStorage();
-                    this.updateChart();
                 },
                 weeklyCompleted() {
                     this.saveToLocalStorage();
-                    this.updateChart();
                 },
                 darkZoneSweepOnly() {
                     this.saveToLocalStorage();
-                    this.updateChart();
                 },
                 darkZoneCompleted() {
                     this.saveToLocalStorage();
-                    this.updateChart();
                 },
                 darkZoneFirstCompleted() {
                     this.saveToLocalStorage();
-                    this.updateChart();
                 },
                 trackingExchanged() {
                     this.saveToLocalStorage();
-                    this.updateChart();
                 },
                 friendshipExchanged() {
                     this.saveToLocalStorage();
-                    this.updateChart();
                 },
                 usePremiumCrystal() {
                     this.saveToLocalStorage();
-                    this.updateChart();
                 },
                 skinReserve: {
                     handler(newValue) {
                         this.saveToLocalStorage();
-                        this.updateChart();
                     },
                     deep: true
                 },
                 customAdjustment() {
                     this.saveToLocalStorage();
-                    this.updateChart();
                 },
                 emotionDetectionCompleted() {
                     this.saveToLocalStorage();
-                    this.updateChart();
                 },
                 dailyShareCompleted() {
                     this.saveToLocalStorage();
-                    this.updateChart();
                 },
                 trackingCertificationCount() {
                     this.saveToLocalStorage();
-                    this.updateChart();
                 },
                 useTrackingCertification() {
                     this.saveToLocalStorage();
-                    this.updateChart();
                 },
                 trainingModes: {
                     handler(newValue) {
                         this.saveToLocalStorage();
-                        this.updateChart();
                     },
                     deep: true
                 },
                 nightmareScore() {
                     this.saveToLocalStorage();
-                    this.updateChart();
                 },
                 nightmareSeaCompleted() {
                     this.saveToLocalStorage();
-                    this.updateChart();
                 },
                 dataGap: {
                     handler(newValue) {
                         this.saveToLocalStorage();
-                        this.updateChart();
                     },
                     deep: true
                 },
+                // 新增模块的watch
                 mainStory: {
                     handler(newValue) {
                         this.saveToLocalStorage();
-                        this.updateChart();
                     },
                     deep: true
                 },
                 darkShadowEx: {
                     handler(newValue) {
                         this.saveToLocalStorage();
-                        this.updateChart();
                     },
                     deep: true
                 },
                 memoryStorm: {
                     handler(newValue) {
                         this.saveToLocalStorage();
-                        this.updateChart();
                     },
                     deep: true
                 },
                 pollutionNest: {
                     handler(newValue) {
                         this.saveToLocalStorage();
-                        this.updateChart();
                     },
                     deep: true
                 },
                 cleanupOperation: {
                     handler(newValue) {
                         this.saveToLocalStorage();
-                        this.updateChart();
                     },
                     deep: true
                 },
                 palmaRuins: {
                     handler(newValue) {
                         this.saveToLocalStorage();
-                        this.updateChart();
                     },
                     deep: true
                 },
+                // 角色养成模块的watch
                 characterDevelopment: {
                     handler(newValue) {
                         this.saveToLocalStorage();
-                        this.updateChart();
                     },
                     deep: true
                 },
-                moduleEnabled: {
+                // 模块开关的watch
+                modules: {
                     handler(newValue) {
                         this.saveToLocalStorage();
-                        this.updateChart();
                     },
                     deep: true
                 }
             },
-            mounted() {
-                this.initChart();
-                window.addEventListener('resize', this.handleResize);
-            },
-            beforeUnmount() {
-                window.removeEventListener('resize', this.handleResize);
-            },
             methods: {
-                initChart() {
-                    const ctx = this.$refs.pieChart.getContext('2d');
-                    this.chart = new Chart(ctx, {
-                        type: 'pie',
-                        data: {
-                            labels: this.summaryCategories.map(cat => cat.label),
-                            datasets: [{
-                                data: this.summaryCategories.map(cat => cat.pulls),
-                                backgroundColor: this.categoryColors,
-                                borderWidth: 2,
-                                borderColor: '#fff'
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    display: false
-                                },
-                                tooltip: {
-                                    callbacks: {
-                                        label: (context) => {
-                                            const category = this.summaryCategories[context.dataIndex];
-                                            return `${category.label}: ${category.pulls}抽 (${category.percentage}%)`;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    });
-                },
-
-                updateChart() {
-                    if (this.chart) {
-                        this.chart.data.datasets[0].data = this.summaryCategories.map(cat => cat.pulls);
-                        this.chart.update();
-                    }
-                },
-
-                showTooltip(category) {
-                    const tooltip = this.$refs.chartTooltip;
-                    tooltip.innerHTML = `${category.label}: ${category.pulls}抽 (${category.percentage}%)`;
-                    tooltip.style.display = 'block';
-                },
-
-                hideTooltip() {
-                    const tooltip = this.$refs.chartTooltip;
-                    tooltip.style.display = 'none';
-                },
-
-                handleResize() {
-                    this.updateChart();
-                },
-
-                formatNumber(num) {
-                    return num.toLocaleString();
-                },
-
-                toggleSection(section) {
-                    this.sections[section] = !this.sections[section];
-                },
-
-                adjustSkinCount(price, change) {
-                    const skinKey = `skin${price}`;
-                    if (this.skinReserve[skinKey] !== undefined) {
-                        const newValue = this.skinReserve[skinKey] + change;
-                        if (newValue >= 0) {
-                            this.skinReserve[skinKey] = newValue;
-                        }
-                    }
-                },
-
-                adjustCertificationCount(change) {
-                    const newValue = this.trackingCertificationCount + change;
-                    if (newValue >= 0) {
-                        this.trackingCertificationCount = newValue;
-                    }
-                },
-
-                toggleTrainingMode(mode) {
-                    this.trainingModes[mode] = !this.trainingModes[mode];
-                },
-
-                toggleDataGap(category, type) {
-                    this.dataGap[category][type] = !this.dataGap[category][type];
-                },
-
-                toggleMainStory(type) {
-                    this.mainStory[type] = !this.mainStory[type];
-                },
-
-                toggleDarkShadowEx(type) {
-                    this.darkShadowEx[type] = !this.darkShadowEx[type];
-                },
-
-                toggleMemoryStorm(type) {
-                    this.memoryStorm[type] = !this.memoryStorm[type];
-                },
-
-                togglePollutionNest(type) {
-                    this.pollutionNest[type] = !this.pollutionNest[type];
-                },
-
-                toggleCleanupOperation(type) {
-                    this.cleanupOperation[type] = !this.cleanupOperation[type];
-                },
-
-                togglePalmaRuins(type) {
-                    this.palmaRuins[type] = !this.palmaRuins[type];
-                },
-                
-                calculateNightmareRewards() {
-                    let totalCrystal = 0;
-                    let totalTickets = 0;
-                    
-                    for (const reward of this.nightmareRewards) {
-                        if (reward.score > this.nightmareScore) {
-                            totalCrystal += reward.crystal;
-                            totalTickets += reward.tickets;
-                        }
-                    }
-                    
-                    return {
-                        crystal: totalCrystal,
-                        tickets: totalTickets
-                    };
-                },
-
                 saveToLocalStorage() {
                     const dataToSave = {
-                        // 原有数据
                         resources: this.resources,
                         selectedTime: this.selectedTime,
                         calculateToPoolEnd: this.calculateToPoolEnd,
@@ -3311,20 +2964,114 @@
                         nightmareScore: this.nightmareScore,
                         nightmareSeaCompleted: this.nightmareSeaCompleted,
                         dataGap: this.dataGap,
+                        // 新增模块数据保存
                         mainStory: this.mainStory,
                         darkShadowEx: this.darkShadowEx,
                         memoryStorm: this.memoryStorm,
                         pollutionNest: this.pollutionNest,
                         cleanupOperation: this.cleanupOperation,
                         palmaRuins: this.palmaRuins,
+                        // 角色养成模块数据保存
                         characterDevelopment: this.characterDevelopment,
-                        moduleEnabled: this.moduleEnabled,
-                        // 新增模块数据
-                        activityResources: this.activityResources,
-                        rechargeResources: this.rechargeResources,
-                        otherResources: this.otherResources
+                        // 模块开关数据保存
+                        modules: this.modules
                     };
                     localStorage.setItem('gachaCalculatorData', JSON.stringify(dataToSave));
+                },
+                
+                toggleSection(section) {
+                    this.sections[section] = !this.sections[section];
+                },
+                
+                adjustSkinCount(price, change) {
+                    const skinKey = `skin${price}`;
+                    if (this.skinReserve[skinKey] !== undefined) {
+                        const newValue = this.skinReserve[skinKey] + change;
+                        if (newValue >= 0) {
+                            this.skinReserve[skinKey] = newValue;
+                        }
+                    }
+                },
+                
+                adjustCertificationCount(change) {
+                    const newValue = this.trackingCertificationCount + change;
+                    if (newValue >= 0) {
+                        this.trackingCertificationCount = newValue;
+                    }
+                },
+                
+                toggleTrainingMode(mode) {
+                    this.trainingModes[mode] = !this.trainingModes[mode];
+                },
+                
+                toggleDataGap(category, type) {
+                    this.dataGap[category][type] = !this.dataGap[category][type];
+                },
+
+                // 新增模块方法
+                toggleMainStory(type) {
+                    this.mainStory[type] = !this.mainStory[type];
+                },
+
+                // 狄斯暗影（EX）方法
+                toggleDarkShadowEx(type) {
+                    this.darkShadowEx[type] = !this.darkShadowEx[type];
+                },
+
+                toggleMemoryStorm(type) {
+                    this.memoryStorm[type] = !this.memoryStorm[type];
+                },
+
+                togglePollutionNest(type) {
+                    this.pollutionNest[type] = !this.pollutionNest[type];
+                },
+
+                toggleCleanupOperation(type) {
+                    this.cleanupOperation[type] = !this.cleanupOperation[type];
+                },
+
+                togglePalmaRuins(type) {
+                    this.palmaRuins[type] = !this.palmaRuins[type];
+                },
+                
+                // 角色养成模块方法
+                toggleHaylaReview() {
+                    this.characterDevelopment.haylaReviewed = !this.characterDevelopment.haylaReviewed;
+                },
+                
+                adjustCharacterDev(type, change) {
+                    const newValue = this.characterDevelopment[type] + change;
+                    if (newValue >= 0) {
+                        this.characterDevelopment[type] = newValue;
+                    }
+                },
+
+                calculateNightmareRewards() {
+                    let totalCrystal = 0;
+                    let totalTickets = 0;
+                    
+                    for (const reward of this.nightmareRewards) {
+                        // 修改：只计算大于当前积分的奖励
+                        if (this.nightmareScore < reward.score) {
+                            totalCrystal += reward.crystal;
+                            totalTickets += reward.tickets;
+                        }
+                    }
+                    
+                    return {
+                        crystal: totalCrystal,
+                        tickets: totalTickets
+                    };
+                },
+
+                validateInput(type) {
+                    // 确保值为整数且非负数
+                    if (this.resources[type] < 0) {
+                        this.resources[type] = 0;
+                    }
+                    if (this.resources[type] !== null && this.resources[type] !== undefined) {
+                        this.resources[type] = Math.floor(this.resources[type]);
+                    }
                 }
             }
         }).mount('#app');
