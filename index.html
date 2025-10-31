@@ -1597,17 +1597,31 @@
                                 <!-- 情绪检测 - 位置调整到每周分享下方 -->
                                 <div class="accumulation-item">
                                     <div class="item-info">
-                                        <span class="item-title">情绪检测：</span>
+                                        <span class="item-title">情绪检测{{ remainingMonths }}月：</span>
                                         <span class="item-value">
-                                            <template v-if="!emotionDetectionCompleted">
-                                                <img :src="crystalIcon" class="resource-icon" alt="异方晶">50 <img :src="ticketIcon" class="resource-icon" alt="搜索令">1
-                                            </template>
-                                            <template v-else><img :src="crystalIcon" class="resource-icon" alt="异方晶">0 <img :src="ticketIcon" class="resource-icon" alt="搜索令">0</template>
+                                            <img :src="crystalIcon" class="resource-icon" alt="异方晶">{{ totalEmotionDetection }} <img :src="ticketIcon" class="resource-icon" alt="搜索令">{{ totalEmotionDetectionTickets }}
                                         </span>
                                     </div>
                                     <div class="switch-group small">
                                         <label class="switch">
                                             <input type="checkbox" v-model="emotionDetectionCompleted">
+                                            <span class="slider"></span>
+                                        </label>
+                                        <span class="switch-label">本月已完成</span>
+                                    </div>
+                                </div>
+
+                                <!-- 签到奖励 - 新增模块 -->
+                                <div class="accumulation-item">
+                                    <div class="item-info">
+                                        <span class="item-title">签到奖励{{ remainingMonths }}月：</span>
+                                        <span class="item-value">
+                                            <img :src="crystalIcon" class="resource-icon" alt="异方晶">{{ totalSignInReward }} <img :src="ticketIcon" class="resource-icon" alt="搜索令">{{ totalSignInRewardTickets }}
+                                        </span>
+                                    </div>
+                                    <div class="switch-group small">
+                                        <label class="switch">
+                                            <input type="checkbox" v-model="signInRewardCompleted">
                                             <span class="slider"></span>
                                         </label>
                                         <span class="switch-label">本月已完成</span>
@@ -2415,8 +2429,6 @@
                                     <img :src="ticketIcon" class="resource-icon" alt="搜索令"> {{ inspectionOrderTicketAmount }}
                                 </button>
                             </div>
-                                </button>
-                            </div>
 
                             <!-- 狄斯盈满钵模块 -->
                             <div class="sub-section">
@@ -2479,6 +2491,7 @@
                                     </div>
                                 </div>
                             </div>
+
                             <!-- 诡珑珍宝馆模块 -->
                             <div class="sub-section">
                                 <h3 class="sub-title" style="display: flex; justify-content: space-between; align-items: center;">
@@ -2598,6 +2611,7 @@
                     dailyInspectionOrderLevel: savedData?.dailyInspectionOrderLevel || 0,
                     
                     emotionDetectionCompleted: savedData?.emotionDetectionCompleted || false,
+                    signInRewardCompleted: savedData?.signInRewardCompleted || false,
                     dailyShareCompleted: savedData?.dailyShareCompleted || false,
                     trackingCertificationCount: savedData?.trackingCertificationCount || 0,
                     useTrackingCertification: savedData?.useTrackingCertification || false,
@@ -2916,14 +2930,120 @@
                     return this.darkZoneFirstCompleted ? 0 : 450;
                 },
                 
+                // 计算从现在到目标日期之间的月份数
+                remainingMonths() {
+                    const today = new Date();
+                    let targetDate = this.selectedTime === 'nextVersion' 
+                        ? new Date(2025, 10, 20)  // 2025年11月20日
+                        : new Date(2026, 1, 17);  // 2026年2月17日
+                    
+                    // 如果计算到卡池结束，则加上版本周数
+                    if (this.calculateToPoolEnd) {
+                        targetDate = new Date(targetDate.getTime() + (this.versionWeeks * 7 * 24 * 60 * 60 * 1000));
+                    }
+                    
+                    // 正确的计算方法：计算跨越的月份数（包含起始月和结束月）
+                    let months = (targetDate.getFullYear() - today.getFullYear()) * 12;
+                    months += targetDate.getMonth() - today.getMonth();
+                    
+                    // 如果目标日期的日期大于等于今天的日期，则加1个月（包含当前月）
+                    if (targetDate.getDate() >= today.getDate()) {
+                        months++;
+                    } else {
+                        // 如果目标日期的日期小于今天的日期，但还在同一个月内，也要包含当前月
+                        months++;
+                    }
+                    
+                    // 确保至少为1个月
+                    return Math.max(1, months);
+                },
+
                 totalEmotionDetection() {
-                    return this.emotionDetectionCompleted ? 0 : 50;
+                    // 开关打开（已完成本月）：显示剩余月份-1的奖励
+                    // 开关关闭（未完成本月）：显示总月份数的奖励
+                    const monthlyReward = 50;
+                    if (this.emotionDetectionCompleted) {
+                        return Math.max(0, (this.remainingMonths - 1)) * monthlyReward;
+                    } else {
+                        return this.remainingMonths * monthlyReward;
+                    }
                 },
-                
+
                 totalEmotionDetectionTickets() {
-                    return this.emotionDetectionCompleted ? 0 : 1;
+                    const monthlyReward = 1;
+                    if (this.emotionDetectionCompleted) {
+                        return Math.max(0, (this.remainingMonths - 1)) * monthlyReward;
+                    } else {
+                        return this.remainingMonths * monthlyReward;
+                    }
+                },
+
+                totalSignInReward() {
+                    const monthlyReward = 100;
+                    if (this.signInRewardCompleted) {
+                        return Math.max(0, (this.remainingMonths - 1)) * monthlyReward;
+                    } else {
+                        return this.remainingMonths * monthlyReward;
+                    }
+                },
+
+                totalSignInRewardTickets() {
+                    const monthlyReward = 1;
+                    if (this.signInRewardCompleted) {
+                        return Math.max(0, (this.remainingMonths - 1)) * monthlyReward;
+                    } else {
+                        return this.remainingMonths * monthlyReward;
+                    }
                 },
                 
+                totalSignInRewardTickets() {
+                    const monthlyReward = 1;
+                    if (this.signInRewardCompleted) {
+                        return 0; // 显示为0
+                    } else {
+                        return this.remainingMonths * monthlyReward;
+                    }
+                },
+
+                // 新增：用于总计计算的奖励（不考虑显示，只考虑实际可获得奖励）
+                totalEmotionDetectionForSummary() {
+                    const monthlyReward = 50;
+                    if (this.emotionDetectionCompleted) {
+                        // 已完成本月，只能获得剩余月份的奖励
+                        return Math.max(0, (this.remainingMonths - 1)) * monthlyReward;
+                    } else {
+                        // 未完成本月，可以获得全部月份的奖励
+                        return this.remainingMonths * monthlyReward;
+                    }
+                },
+                
+                totalEmotionDetectionTicketsForSummary() {
+                    const monthlyReward = 1;
+                    if (this.emotionDetectionCompleted) {
+                        return Math.max(0, (this.remainingMonths - 1)) * monthlyReward;
+                    } else {
+                        return this.remainingMonths * monthlyReward;
+                    }
+                },
+
+                totalSignInRewardForSummary() {
+                    const monthlyReward = 100;
+                    if (this.signInRewardCompleted) {
+                        return Math.max(0, (this.remainingMonths - 1)) * monthlyReward;
+                    } else {
+                        return this.remainingMonths * monthlyReward;
+                    }
+                },
+                
+                totalSignInRewardTicketsForSummary() {
+                    const monthlyReward = 1;
+                    if (this.signInRewardCompleted) {
+                        return Math.max(0, (this.remainingMonths - 1)) * monthlyReward;
+                    } else {
+                        return this.remainingMonths * monthlyReward;
+                    }
+                },
+
                 totalDailyShare() {
                     // 使用剩余分享周数计算逻辑
                     return 60 * this.remainingShareWeeks;
@@ -3128,7 +3248,8 @@
                         this.totalWeeklyActive + 
                         this.totalDarkZone +
                         this.totalDarkZoneFirst +
-                        this.totalEmotionDetection +
+                        this.totalEmotionDetectionForSummary +  // 使用新的计算属性情绪检测
+                        this.totalSignInRewardForSummary +      // 使用新的计算属性
                         this.totalDailyShare +
                         (this.totalTrackingExchange * 180) +
                         (this.totalFriendshipExchange * 180) +
@@ -3200,7 +3321,8 @@
                     const baseTickets = this.resources.tickets || 0;
                     const additionalTickets = this.totalTrackingExchange + 
                                             this.totalFriendshipExchange + 
-                                            this.totalEmotionDetectionTickets +
+                                            this.totalEmotionDetectionTicketsForSummary +  // 使用新的计算属性
+                                            this.totalSignInRewardTicketsForSummary +      // 使用新的计算属性签到奖励
                                             this.totalTrackingCertificationTickets +
                                             this.trainingRewards.tickets +
                                             this.nightmareTotalRewards.tickets +
@@ -3559,6 +3681,9 @@
                 emotionDetectionCompleted() {
                     this.saveToLocalStorage();
                 },
+                signInRewardCompleted() {
+                    this.saveToLocalStorage();
+                },
                 dailyShareCompleted() {
                     this.saveToLocalStorage();
                 },
@@ -3690,6 +3815,7 @@
                         skinReserve: this.skinReserve,
                         customAdjustment: this.customAdjustment,
                         emotionDetectionCompleted: this.emotionDetectionCompleted,
+                        signInRewardCompleted: this.signInRewardCompleted,
                         dailyShareCompleted: this.dailyShareCompleted,
                         trackingCertificationCount: this.trackingCertificationCount,
                         useTrackingCertification: this.useTrackingCertification,
