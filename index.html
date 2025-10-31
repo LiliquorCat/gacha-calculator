@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>海拉的钱包</title>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/vue@3.4.21/dist/vue.global.js"></script>
     <style>
         /* 基础样式 */
         .gacha-calculator {
@@ -823,31 +823,116 @@
             color: #666;
         }
 
+        /* 无尽梦魇滑块样式（大范围） */
         .score-slider {
             width: 100%;
-            height: 6px;
+            height: 20px; /* 增加高度给滑块更多空间 */
             border-radius: 3px;
-            background: #ddd;
+            background: #f5f7fa; /* 使用页面背景色 */
             outline: none;
             -webkit-appearance: none;
+            margin: 10px 0;
         }
 
         .score-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
             background: #1890ff;
             cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .score-slider::-moz-range-thumb {
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
             background: #1890ff;
             cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .score-slider::-webkit-slider-track {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #ddd;
+            margin: 7px 0; /* 添加垂直居中 */
+        }
+
+        .score-slider::-moz-range-track {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #ddd;
             border: none;
+        }
+
+        /* 监察密令滑块样式（小范围） */
+        .inspection-slider {
+            width: 100%;
+            height: 20px; /* 增加高度给滑块更多空间 */
+            border-radius: 3px;
+            background: #f5f7fa; /* 使用页面背景色 */
+            outline: none;
+            -webkit-appearance: none;
+            margin: 10px 0;
+        }
+
+        .inspection-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #1890ff;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .inspection-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #1890ff;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .inspection-slider::-webkit-slider-track {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #ddd;
+            margin: 7px 0; /* 添加垂直居中 */
+        }
+
+        .inspection-slider::-moz-range-track {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #ddd;
+            border: none;
+        }
+
+        /* 滑块禁用状态样式 */
+        .inspection-slider:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .inspection-slider:disabled::-webkit-slider-thumb {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .inspection-slider:disabled::-moz-range-thumb {
+            background: #ccc;
+            cursor: not-allowed;
         }
 
         .slider-value {
@@ -962,19 +1047,6 @@
             border-color: #1890ff;
             background: #1890ff;
             color: white;
-        }
-
-        /* 模块开关样式 */
-        .module-toggle {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-left: 10px;
-        }
-
-        .module-toggle-label {
-            font-size: 12px;
-            color: #666;
         }
 
         /* 移动端适配 */
@@ -1200,6 +1272,7 @@
                 margin-left: 0;
                 margin-top: 5px;
             }
+        }
 
         @media (max-width: 480px) {
             .gacha-calculator {
@@ -1310,7 +1383,7 @@
                     <!-- 合并的卡池时间和攒抽预测模块 -->
                     <div class="time-section card">
                         <h2 @click="toggleSection('pullSummary')" class="section-header">
-                            📊 共计 {{ futurePulls }} 抽
+                            📊 共计 {{ futurePulls }} 抽 💰氪金{{ totalRechargeCost }}￥
                             <span class="collapse-icon">{{ sections.pullSummary ? '−' : '+' }}</span>
                         </h2>
                         
@@ -1327,8 +1400,8 @@
                                 <div class="summary-item" style="display: flex; align-items: center; gap: 8px; margin: 0;">
                                     <img :src="premiumCrystalIcon" class="resource-icon" alt="璀璨晶源">
                                     <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px;">
-                                        <span class="summary-value">{{ (resources.premiumCrystal || 0) - totalSkinReserve }}</span>
-                                        <div style="font-size: 12px; color: #666;">({{ Math.floor(((resources.premiumCrystal || 0) - totalSkinReserve) / 180) }}抽)</div>
+                                        <span class="summary-value">{{ totalPremiumCrystalSummary }}</span>
+                                        <div style="font-size: 12px; color: #666;">({{ Math.floor(totalPremiumCrystalSummary / 180) }}抽)</div>
                                     </div>
                                 </div>
                                 <div class="summary-item" style="display: flex; align-items: center; gap: 8px; margin: 0;">
@@ -1359,16 +1432,16 @@
                                     @click="selectedTime = 'nextVersion'">
                                     <div class="time-title">下版本</div>
                                     <div class="time-date">2025年11月20日</div>
-                                    <div class="time-days">剩余 {{ daysToNextVersion }} 天</div>
+                                    <div class="time-days">剩余 {{ calculateDisplayDays('nextVersion') }} 天</div>
                                     <div class="time-weeks">持续 {{ versionWeeks }} 周</div>
                                 </div>
-                                
+
                                 <div class="time-option" 
                                     :class="{ active: selectedTime === 'newYear' }"
                                     @click="selectedTime = 'newYear'">
                                     <div class="time-title">新年版本</div>
                                     <div class="time-date">2026年2月17日</div>
-                                    <div class="time-days">剩余 {{ daysToNewYear }} 天</div>
+                                    <div class="time-days">剩余 {{ calculateDisplayDays('newYear') }} 天</div>
                                     <div class="time-weeks">持续 {{ versionWeeks }} 周</div>
                                 </div>
                             </div>
@@ -1540,6 +1613,48 @@
                                         <span class="switch-label">本月已完成</span>
                                     </div>
                                 </div>
+
+                                <!-- 监察密令模块 - 整合到背景框中 -->
+                                <div class="nightmare-score" style="margin-top: 20px;">
+                                    
+                                <button 
+                                    class="training-btn" 
+                                    style="width: 100%; margin-bottom: 15px; background: #f0f0f0; cursor: default;"
+                                    disabled>
+                                    经历{{ calculateInspectionPeriods }}期监察密令
+                                    <img :src="ticketIcon" class="resource-icon" alt="搜索令"> {{ dailyInspectionOrderTickets }}
+                                </button>
+                                    
+                                    <div class="slider-container">
+                                        <div class="slider-labels">
+                                            <span>0级</span>
+                                            <span>55级</span>
+                                        </div>
+                                        <input 
+                                            type="range" 
+                                            v-model.number="dailyInspectionOrderLevel" 
+                                            min="0" 
+                                            max="55"
+                                            step="5"
+                                            class="inspection-slider"
+                                        >
+                                        <datalist id="inspection-levels">
+                                            <option value="0">0</option>
+                                            <option value="5">5</option>
+                                            <option value="15">15</option>
+                                            <option value="25">25</option>
+                                            <option value="30">30</option>
+                                            <option value="35">35</option>
+                                            <option value="45">45</option>
+                                            <option value="50">50</option>
+                                            <option value="55">55</option>
+                                        </datalist>
+                                        <div class="slider-value">
+                                            本期监察密令等级: {{ dailyInspectionOrderLevel }}
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
 
                             <!-- 破碎防线模块 -->
@@ -1737,9 +1852,18 @@
                                         <span class="item-value"> <img :src="ticketIcon" class="resource-icon" alt="搜索令"> {{ trackingCertificationTickets }}</span>
                                     </div>
                                     <div class="certification-controls">
-                                        <button class="certification-btn" @click="adjustCertificationCount(-1)">−</button>
-                                        <span class="certification-count"> <img :src="yellowTicketIcon" class="resource-icon" alt="黄票"> {{ trackingCertificationCount * 8 }}</span>
-                                        <button class="certification-btn" @click="adjustCertificationCount(1)">+</button>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <input 
+                                                type="number" 
+                                                v-model.number="trackingCertificationCount" 
+                                                placeholder="0" 
+                                                min="0" 
+                                                step="1" 
+                                                @input="validateCertificationInput"
+                                                style="width: 80px; padding: 8px; border: 1px solid #ddd; border-radius: 5px; text-align: center;"
+                                            >
+                                            <img :src="yellowTicketIcon" class="resource-icon" alt="黄票">
+                                        </div>
                                     </div>
                                     <div class="switch-group small">
                                         <label class="switch">
@@ -1776,20 +1900,17 @@
                         <div v-if="sections.potential" class="section-content">
                             <!-- 无尽梦魇子模块 -->
                             <div class="sub-section">
-                                <div class="section-header">
-                                    <h3 class="sub-title">无尽梦魇</h3>
-                                    <div class="module-toggle">
-                                        <label class="switch">
-                                            <input type="checkbox" v-model="modules.nightmare">
-                                            <span class="slider"></span>
-                                        </label>
-                                        <span class="module-toggle-label">{{ modules.nightmare ? '计算此模块' : '不计算此模块' }}</span>
-                                    </div>
-                                </div>
+                                <h3 class="sub-title">无尽梦魇</h3>
                                 
                                 <!-- 积分奖励 -->
                                 <div class="nightmare-score">
-                                    <h4 class="score-title">积分奖励</h4>
+                                    <h4 class="score-title">
+                                        积分奖励 
+                                        <span style="font-size: 14px; font-weight: normal; margin-left: 10px;">
+                                            <img :src="crystalIcon" class="resource-icon" alt="异方晶"> {{ nightmareCrystalReward }} 
+                                            <img :src="ticketIcon" class="resource-icon" alt="搜索令"> {{ nightmareTicketReward }}
+                                        </span>
+                                    </h4>
                                     <div class="slider-container">
                                         <div class="slider-labels">
                                             <span>0</span>
@@ -1807,35 +1928,12 @@
                                             当前积分: {{ nightmareScore }}
                                         </div>
                                     </div>
-                                    <div class="score-rewards">
-                                        <div class="reward-item">
-                                            <span class="reward-label">
-                                                <img :src="crystalIcon" class="resource-icon" alt="异方晶"> 
-                                            </span>
-                                            <span class="reward-value">{{ nightmareCrystalReward }}</span>
-                                        </div>
-                                        <div class="reward-item">
-                                            <span class="reward-label">
-                                                <img :src="ticketIcon" class="resource-icon" alt="搜索令"> 
-                                            </span>
-                                            <span class="reward-value">{{ nightmareTicketReward }}</span>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
 
                             <!-- 角色养成模块 -->
                             <div class="sub-section">
-                                <div class="section-header">
-                                    <h3 class="sub-title">角色养成</h3>
-                                    <div class="module-toggle">
-                                        <label class="switch">
-                                            <input type="checkbox" v-model="modules.characterDevelopment">
-                                            <span class="slider"></span>
-                                        </label>
-                                        <span class="module-toggle-label">{{ modules.characterDevelopment ? '计算此模块' : '不计算此模块' }}</span>
-                                    </div>
-                                </div>
+                                <h3 class="sub-title">角色养成</h3>
                                 
                                 <div class="character-development-input">
                                     <span class="character-development-label">
@@ -1939,55 +2037,55 @@
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.chaosBeyondA }"
                                                 @click="toggleMainStory('chaosBeyondA')">
-                                                01混沌彼岸A<img :src="crystalIcon" class="resource-icon" alt="异方晶">895<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
+                                                01混沌彼岸A<img :src="crystalIcon" class="resource-icon" alt="异方晶">995<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                             <button 
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.chaosBeyondB }"
                                                 @click="toggleMainStory('chaosBeyondB')">
-                                                02混沌彼岸B<img :src="crystalIcon" class="resource-icon" alt="异方晶">1130<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
+                                                02混沌彼岸B<img :src="crystalIcon" class="resource-icon" alt="异方晶">1230<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                             <button 
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.unownedCavernA }"
                                                 @click="toggleMainStory('unownedCavernA')">
-                                                03无主地窟A<img :src="crystalIcon" class="resource-icon" alt="异方晶">1075<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
+                                                03无主地窟A<img :src="crystalIcon" class="resource-icon" alt="异方晶">1175<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                             <button 
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.unownedCavernB }"
                                                 @click="toggleMainStory('unownedCavernB')">
-                                                04无主地窟B<img :src="crystalIcon" class="resource-icon" alt="异方晶">1180<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
+                                                04无主地窟B<img :src="crystalIcon" class="resource-icon" alt="异方晶">1280<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                             <button 
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.kiranSquareA }"
                                                 @click="toggleMainStory('kiranSquareA')">
-                                                05奇兰广场A<img :src="crystalIcon" class="resource-icon" alt="异方晶">1165<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
+                                                05奇兰广场A<img :src="crystalIcon" class="resource-icon" alt="异方晶">1265<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                             <button 
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.kiranSquareB }"
                                                 @click="toggleMainStory('kiranSquareB')">
-                                                06奇兰广场B<img :src="crystalIcon" class="resource-icon" alt="异方晶">1130<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
+                                                06奇兰广场B<img :src="crystalIcon" class="resource-icon" alt="异方晶">1230<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                             <button 
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.carnivalA }"
                                                 @click="toggleMainStory('carnivalA')">
-                                                07嘉年华A<img :src="crystalIcon" class="resource-icon" alt="异方晶">1130<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
+                                                07嘉年华A<img :src="crystalIcon" class="resource-icon" alt="异方晶">1230<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                             <button 
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.carnivalB }"
                                                 @click="toggleMainStory('carnivalB')">
-                                                08嘉年华B<img :src="crystalIcon" class="resource-icon" alt="异方晶">835<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
+                                                08嘉年华B<img :src="crystalIcon" class="resource-icon" alt="异方晶">935<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                             <button 
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.refugeeCampA }"
                                                 @click="toggleMainStory('refugeeCampA')">
-                                                09流民寨A<img :src="crystalIcon" class="resource-icon" alt="异方晶">1025<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
+                                                09流民寨A<img :src="crystalIcon" class="resource-icon" alt="异方晶">1125<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                         </div>
                                         <div class="main-story-column">
@@ -1995,50 +2093,80 @@
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.refugeeCampB }"
                                                 @click="toggleMainStory('refugeeCampB')">
-                                                10流民寨B<img :src="crystalIcon" class="resource-icon" alt="异方晶">1095<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
+                                                10流民寨B<img :src="crystalIcon" class="resource-icon" alt="异方晶">1195<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                             <button 
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.muddyDarkTrapA }"
                                                 @click="toggleMainStory('muddyDarkTrapA')">
-                                                11沉浊暗阱A<img :src="crystalIcon" class="resource-icon" alt="异方晶">1130<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
+                                                11沉浊暗阱A<img :src="crystalIcon" class="resource-icon" alt="异方晶">1230<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                             <button 
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.muddyDarkTrapB }"
                                                 @click="toggleMainStory('muddyDarkTrapB')">
-                                                12沉浊暗阱B<img :src="crystalIcon" class="resource-icon" alt="异方晶">505<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
+                                                12沉浊暗阱B<img :src="crystalIcon" class="resource-icon" alt="异方晶">605<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                             <button 
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.highTowerBlackRing }"
                                                 @click="toggleMainStory('highTowerBlackRing')">
-                                                13高塔黑环<img :src="crystalIcon" class="resource-icon" alt="异方晶">1880<img :src="ticketIcon" class="resource-icon" alt="搜索令">2
+                                                13高塔黑环<img :src="crystalIcon" class="resource-icon" alt="异方晶">1980<img :src="ticketIcon" class="resource-icon" alt="搜索令">2
                                             </button>
                                             <button 
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.darkSurgeA }"
                                                 @click="toggleMainStory('darkSurgeA')">
-                                                N1暗涌A<img :src="crystalIcon" class="resource-icon" alt="异方晶">905<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
+                                                N1暗涌A<img :src="crystalIcon" class="resource-icon" alt="异方晶">1005<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                             <button 
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.darkSurgeB }"
                                                 @click="toggleMainStory('darkSurgeB')">
-                                                N2暗涌B<img :src="crystalIcon" class="resource-icon" alt="异方晶">905<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
+                                                N2暗涌B<img :src="crystalIcon" class="resource-icon" alt="异方晶">1005<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                             <button 
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.goldFeastA }"
                                                 @click="toggleMainStory('goldFeastA')">
-                                                N3碎金盛宴A<img :src="crystalIcon" class="resource-icon" alt="异方晶">800<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
+                                                N3碎金盛宴A<img :src="crystalIcon" class="resource-icon" alt="异方晶">900<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
                                             <button 
                                                 class="main-story-btn" 
                                                 :class="{ active: mainStory.goldFeastB }"
                                                 @click="toggleMainStory('goldFeastB')">
-                                                N4碎金盛宴B<img :src="crystalIcon" class="resource-icon" alt="异方晶">1080<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
+                                                N4碎金盛宴B<img :src="crystalIcon" class="resource-icon" alt="异方晶">1180<img :src="ticketIcon" class="resource-icon" alt="搜索令">1
                                             </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 行动纪要模块 -->
+                            <div class="sub-section">
+                                <h3 class="sub-title">行动纪要</h3>
+                                <div class="action-summary">
+                                    <div class="summary-header" style="background: white; padding: 12px 15px; border-radius: 8px; border: 1px solid #e1e5e9; margin-bottom: 15px;">
+                                        <div style="display: flex; align-items: center; gap: 15px;">
+                                            <span class="summary-text" style="font-size: 16px; font-weight: bold; color: #1890ff; flex: 1;">
+                                                {{ actionSummaryText }}
+                                            </span>
+                                            <span class="summary-crystal" style="font-size: 14px; font-weight: bold; color: #1890ff; white-space: nowrap;">
+                                                <img :src="crystalIcon" class="resource-icon" alt="异方晶"> {{ actionSummaryCrystal }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="slider-container">
+                                        <input 
+                                            type="range" 
+                                            v-model.number="actionSummaryLevel" 
+                                            min="0" 
+                                            max="19"
+                                            step="1"
+                                            class="score-slider"
+                                        >
+                                        <div class="slider-value">
+                                            当前状态: {{ actionSummaryText }}
                                         </div>
                                     </div>
                                 </div>
@@ -2216,6 +2344,164 @@
                                     </div>
                                 </div>
                             </div>
+                            
+                        </div>
+                    </div>
+
+
+                    <!-- 氪金资源模块 -->
+                    <div class="potential-section card">
+                        <h2 @click="toggleSection('recharge')" class="section-header">
+                            💰 氪金资源
+                            <span class="collapse-icon">{{ sections.recharge ? '−' : '+' }}</span>
+                        </h2>
+                        <div v-if="sections.recharge" class="section-content">
+                            <!-- 月卡购买控制 -->
+                            <div class="sub-section">
+                                <h3 class="sub-title">黑钥贵宾（小月卡）</h3>
+                                
+                                <div class="resource-input-vertical" style="margin-bottom: 15px;">
+                                    <label style="min-width: 200px; display: flex; align-items: center; gap: 5px;">
+                                        额外购买
+                                        <button class="skin-btn" @click="adjustMonthlyCard(-1)">−</button>
+                                        <span class="skin-count" style="min-width: 40px; text-align: center;">{{ monthlyCardCount }}</span>
+                                        <button class="skin-btn" @click="adjustMonthlyCard(1)">+</button>
+                                        张月卡(负数代表已提前购买)：
+                                    </label>
+                                </div>
+                                
+                                <div style="font-size: 12px; color: #666; margin-bottom: 15px;">
+                                    额外购买一张月卡可提前拿到300璀璨晶源，已提前购买则只能拿到每日60异方晶，不计算30RMB
+                                </div>
+                                
+                                <!-- 月卡奖励按钮 -->
+                                <button 
+                                    class="training-btn" 
+                                    :class="{ active: monthlyCardActive }"
+                                    @click="toggleMonthlyCard"
+                                    style="width: calc(100% - 30px); margin: 0 auto 15px; display: block;">
+                                    黑钥贵宾 
+                                    <img :src="premiumCrystalIcon" class="resource-icon" alt="璀璨晶源"> {{ monthlyCardPremiumCrystal }} 
+                                    <img :src="crystalIcon" class="resource-icon" alt="异方晶"> {{ monthlyCardCrystal }}
+                                </button>
+                            </div>
+
+                            <!-- 高级监察密令模块 -->
+                            <div class="sub-section">
+                                <h3 class="sub-title">高级监察密令（大月卡）</h3>
+                                
+                                <div class="resource-input-vertical" style="margin-bottom: 15px;">
+                                    <label style="min-width: 200px; display: flex; align-items: center; gap: 5px;">
+                                        额外购买
+                                        <button class="skin-btn" @click="adjustInspectionOrder(-1)">−</button>
+                                        <span class="skin-count" style="min-width: 40px; text-align: center;">{{ inspectionOrderCount }}</span>
+                                        <button class="skin-btn" @click="adjustInspectionOrder(1)">+</button>
+                                        期高级监察密令(负数代表已提前购买)：
+                                    </label>
+                                </div>
+                                
+                                <div style="font-size: 12px; color: #666; margin-bottom: 15px;">
+                                    额外购买的高级监察密令默认可拿到当期奖励，已提前购买则不计算68RMB
+                                </div>
+                                
+                                <!-- 高级监察密令奖励按钮 -->
+                                <button 
+                                    class="training-btn" 
+                                    :class="{ active: inspectionOrderActive }"
+                                    @click="toggleInspectionOrder"
+                                    style="width: calc(100% - 30px); margin: 0 auto 15px; display: block;">
+                                    高级监察密令 
+                                    <img :src="crystalIcon" class="resource-icon" alt="异方晶"> {{ inspectionOrderCrystalAmount }} 
+                                    <img :src="ticketIcon" class="resource-icon" alt="搜索令"> {{ inspectionOrderTicketAmount }}
+                                </button>
+                            </div>
+                                </button>
+                            </div>
+
+                            <!-- 狄斯盈满钵模块 -->
+                            <div class="sub-section">
+                                <h3 class="sub-title" style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span>狄斯盈满钵</span>
+                                    <div class="switch-group" style="margin: 0;">
+                                        <span class="switch-label" :class="{ active: !disiPrePurchased, inactive: disiPrePurchased }">未预先购买</span>
+                                        <label class="switch">
+                                            <input type="checkbox" v-model="disiPrePurchased" :disabled="!disiActive">
+                                            <span class="slider"></span>
+                                        </label>
+                                        <span class="switch-label" :class="{ active: disiPrePurchased, inactive: !disiPrePurchased }">已预先购买</span>
+                                    </div>
+                                </h3>
+                                
+                                <button 
+                                    class="training-btn" 
+                                    :class="{ active: disiActive }"
+                                    @click="toggleDisi"
+                                    style="width: calc(100% - 30px); margin: 0 auto 15px; display: block;">
+                                    狄斯盈满钵
+                                    <img :src="premiumCrystalIcon" class="resource-icon" alt="璀璨晶源"> {{ disiPremiumCrystal }} 
+                                    <img :src="crystalIcon" class="resource-icon" alt="异方晶"> {{ disiRewardTotal }}
+                                </button>
+                                
+                                <div class="slider-container">
+                                    <div class="slider-labels">
+                                        <span>0级</span>
+                                        <span>50级</span>
+                                    </div>
+                                    <input 
+                                        type="range" 
+                                        v-model.number="disiLevel" 
+                                        min="0" 
+                                        max="50"
+                                        step="1"
+                                        class="inspection-slider"
+                                        list="disi-levels"
+                                        @input="snapDisiLevel"
+                                        :disabled="!disiActive"
+                                    >
+                                    <datalist id="disi-levels">
+                                        <option value="0">0</option>
+                                        <option value="5">5</option>
+                                        <option value="10">10</option>
+                                        <option value="15">15</option>
+                                        <option value="20">20</option>
+                                        <option value="25">25</option>
+                                        <option value="30">30</option>
+                                        <option value="35">35</option>
+                                        <option value="40">40</option>
+                                        <option value="42">42</option>
+                                        <option value="44">44</option>
+                                        <option value="46">46</option>
+                                        <option value="48">48</option>
+                                        <option value="50">50</option>
+                                    </datalist>
+                                    <div class="slider-value">
+                                        当前等级: {{ disiLevel }}
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 诡珑珍宝馆模块 -->
+                            <div class="sub-section">
+                                <h3 class="sub-title" style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span>诡珑珍宝馆</span>
+                                    <div class="switch-group" style="margin: 0;">
+                                        <span class="switch-label" :class="{ active: !treasurePrePurchased, inactive: treasurePrePurchased }">未预先购买</span>
+                                        <label class="switch">
+                                            <input type="checkbox" v-model="treasurePrePurchased" :disabled="!treasureActive">
+                                            <span class="slider"></span>
+                                        </label>
+                                        <span class="switch-label" :class="{ active: treasurePrePurchased, inactive: !treasurePrePurchased }">已预先购买</span>
+                                    </div>
+                                </h3>
+                                
+                                <button 
+                                    class="training-btn" 
+                                    :class="{ active: treasureActive }"
+                                    @click="toggleTreasure"
+                                    style="width: calc(100% - 30px); margin: 0 auto 15px; display: block;">
+                                    诡珑珍宝馆 
+                                    <img :src="ticketIcon" class="resource-icon" alt="搜索令"> {{ treasureTickets }}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2225,12 +2511,25 @@
 
     <script>
         const { createApp } = Vue;
-        
-        createApp({
+
+        const app = createApp({
             name: 'GachaCalculator',
             data() {
-                const savedData = JSON.parse(localStorage.getItem('gachaCalculatorData'));
-                
+                let savedData = {};
+                try {
+                    const saved = localStorage.getItem('gachaCalculatorData');
+                    if (saved) {
+                        savedData = JSON.parse(saved);
+                        // 验证数据完整性
+                        if (typeof savedData !== 'object') {
+                            throw new Error('Invalid data format');
+                        }
+                    }
+                } catch (e) {
+                    console.error('解析localStorage失败，清除损坏数据并使用默认数据', e);
+                    localStorage.removeItem('gachaCalculatorData'); // 清除损坏数据
+                    savedData = {};
+                }                
                 return {
                     // 图标路径 - 使用绝对路径
                     crystalIcon: 'icons/crystal.png',
@@ -2239,7 +2538,30 @@
                     premiumCrystalIcon: 'icons/premium_crystal.png',
                     yellowTicketIcon: 'icons/yellow_ticket.png',
                     hlIcon:'icons/hl.gif',
-                    
+
+                    actionSummaryLevel: savedData?.actionSummaryLevel || 0,
+                    actionSummaryList: [
+                        "01·混沌彼岸",
+                        "02·混沌彼岸", 
+                        "03·无主地窟",
+                        "04·无主地窟",
+                        "05·奇兰广场",
+                        "06·奇兰广场",
+                        "07·嘉年华",
+                        "08·嘉年华",
+                        "09·流民寨",
+                        "10·流民寨",
+                        "11·沉浊暗阱",
+                        "12·沉浊暗阱",
+                        "13·高塔黑环",
+                        "N1·暗涌",
+                        "N2·暗涌", 
+                        "N3·碎金盛宴",
+                        "N4·碎金盛宴",
+                        "N5·残锋",
+                        "N6·残锋"
+                    ],
+
                     // 原有数据保持不变
                     resources: savedData?.resources || {
                         crystal: 0,
@@ -2265,9 +2587,15 @@
                         resources: true,
                         daily: true,
                         potential: true,
-                        pullSummary: true
+                        pullSummary: true,
+                        recharge: true  // 新增这一行
                     },
                     versionWeeks: 4,
+                    monthlyCardCount: savedData?.monthlyCardCount || 0,
+                    monthlyCardActive: savedData?.monthlyCardActive || false,
+                    inspectionOrderActive: savedData?.inspectionOrderActive || false,
+                    inspectionOrderCount: savedData?.inspectionOrderCount || 0,
+                    dailyInspectionOrderLevel: savedData?.dailyInspectionOrderLevel || 0,
                     
                     emotionDetectionCompleted: savedData?.emotionDetectionCompleted || false,
                     dailyShareCompleted: savedData?.dailyShareCompleted || false,
@@ -2369,12 +2697,6 @@
                         haylaReviewed: false
                     },
                     
-                    // 模块开关数据
-                    modules: savedData?.modules || {
-                        nightmare: true,
-                        characterDevelopment: true
-                    },
-                    
                     nightmareRewards: [
                         { score: 1000, crystal: 100, tickets: 0 },
                         { score: 2000, crystal: 0, tickets: 1 },
@@ -2410,10 +2732,59 @@
                         { score: 56000, crystal: 100, tickets: 0 },
                         { score: 58000, crystal: 100, tickets: 0 },
                         { score: 60000, crystal: 0, tickets: 1 }
+                    ],
+                    // 狄斯盈满钵数据
+                    disiLevel: savedData?.disiLevel || 0,
+                    disiActive: savedData?.disiActive || false,
+                    disiPrePurchased: savedData?.disiPrePurchased || false,
+                    // 诡珑珍宝馆数据
+                    treasureActive: savedData?.treasureActive || false,
+                    treasurePrePurchased: savedData?.treasurePrePurchased || false,
+                    disiRewards: [
+                        { level: 0, crystal: 0 },
+                        { level: 5, crystal: 400 },
+                        { level: 10, crystal: 400 },
+                        { level: 15, crystal: 500 },
+                        { level: 20, crystal: 500 },
+                        { level: 25, crystal: 600 },
+                        { level: 30, crystal: 600 },
+                        { level: 35, crystal: 600 },
+                        { level: 40, crystal: 800 },
+                        { level: 42, crystal: 800 },
+                        { level: 44, crystal: 800 },
+                        { level: 46, crystal: 1000 },
+                        { level: 48, crystal: 1000 },
+                        { level: 50, crystal: 1800 }
                     ]
                 }
             },
             computed: {
+
+                // 日常积累模块的搜索令计算
+                dailyInspectionOrderTickets() {
+                    let tickets = 0;
+                    const levels = [5, 15, 25, 35, 45, 55];
+                    
+                    for (const level of levels) {
+                        if (this.dailyInspectionOrderLevel < level) {
+                            tickets += 1;
+                        }
+                    }
+                    
+                    const periods = this.calculateInspectionPeriods;
+                    const totalPerPeriod = 6;
+                    
+                    return tickets + (periods - 1) * totalPerPeriod;
+                },
+
+                // 新增行动纪要异方晶计算
+                actionSummaryCrystal() {
+                    // 总异方晶3800，滑块从0到18，每滑动一格减少200
+                    const totalCrystal = 3800;
+                    const crystalPerStep = 200;
+                    return totalCrystal - (this.actionSummaryLevel * crystalPerStep);
+                },
+
                 daysToNextVersion() {
                     const today = new Date();
                     const targetDate = new Date(2025, 10, 20);
@@ -2437,9 +2808,14 @@
                 
                 weeklyCount() {
                     const today = new Date();
-                    const targetDate = this.selectedTime === 'nextVersion' 
+                    let targetDate = this.selectedTime === 'nextVersion' 
                         ? new Date(2025, 10, 20) 
                         : new Date(2026, 1, 17);
+                    
+                    // 如果计算到卡池结束，则加上版本周数
+                    if (this.calculateToPoolEnd) {
+                        targetDate = new Date(targetDate.getTime() + (this.versionWeeks * 7 * 24 * 60 * 60 * 1000));
+                    }
                     
                     // 计算从当前周一到目标日期之间的完整周数
                     const currentMonday = new Date(today);
@@ -2511,15 +2887,15 @@
                 },
                 
                 trackingCertificationTickets() {
-                    return this.useTrackingCertification ? this.trackingCertificationCount : 0;
+                    return this.useTrackingCertification ? Math.floor(this.trackingCertificationCount / 8) : 0;
                 },
                 
                 nightmareCrystalReward() {
-                    return this.modules.nightmare ? this.calculateNightmareRewards().crystal : 0;
+                    return this.calculateNightmareRewards().crystal;
                 },
-                
+
                 nightmareTicketReward() {
-                    return this.modules.nightmare ? this.calculateNightmareRewards().tickets : 0;
+                    return this.calculateNightmareRewards().tickets;
                 },
                 
                 nightmareSeaReward() {
@@ -2562,11 +2938,11 @@
                 },
                 
                 totalTrackingCertification() {
-                    return this.useTrackingCertification ? (this.trackingCertificationCount * 180) : 0;
+                    return 0; // 黄票兑换不产生异方晶，只产生搜索令
                 },
                 
                 totalTrackingCertificationTickets() {
-                    return this.useTrackingCertification ? this.trackingCertificationCount : 0;
+                    return this.useTrackingCertification ? Math.floor(this.trackingCertificationCount / 8) : 0;
                 },
                 
                 trainingRewards() {
@@ -2627,29 +3003,36 @@
                     let crystal = 0;
                     let tickets = 0;
                     
-                    if (this.mainStory.chaosBeyondA) { crystal += 895; tickets += 1; }
-                    if (this.mainStory.chaosBeyondB) { crystal += 1130; tickets += 1; }
-                    if (this.mainStory.unownedCavernA) { crystal += 1075; tickets += 1; }
-                    if (this.mainStory.unownedCavernB) { crystal += 1180; tickets += 1; }
-                    if (this.mainStory.kiranSquareA) { crystal += 1165; tickets += 1; }
-                    if (this.mainStory.kiranSquareB) { crystal += 1130; tickets += 1; }
-                    if (this.mainStory.carnivalA) { crystal += 1130; tickets += 1; }
-                    if (this.mainStory.carnivalB) { crystal += 835; tickets += 1; }
-                    if (this.mainStory.refugeeCampA) { crystal += 1025; tickets += 1; }
-                    if (this.mainStory.refugeeCampB) { crystal += 1095; tickets += 1; }
-                    if (this.mainStory.muddyDarkTrapA) { crystal += 1130; tickets += 1; }
-                    if (this.mainStory.muddyDarkTrapB) { crystal += 505; tickets += 1; }
-                    if (this.mainStory.highTowerBlackRing) { crystal += 1880; tickets += 2; }
-                    if (this.mainStory.darkSurgeA) { crystal += 905; tickets += 1; }
-                    if (this.mainStory.darkSurgeB) { crystal += 905; tickets += 1; }
-                    if (this.mainStory.goldFeastA) { crystal += 800; tickets += 1; }
-                    if (this.mainStory.goldFeastB) { crystal += 1080; tickets += 1; }
+                    if (this.mainStory.chaosBeyondA) { crystal += 995; tickets += 1; }
+                    if (this.mainStory.chaosBeyondB) { crystal += 1230; tickets += 1; }
+                    if (this.mainStory.unownedCavernA) { crystal += 1175; tickets += 1; }
+                    if (this.mainStory.unownedCavernB) { crystal += 1280; tickets += 1; }
+                    if (this.mainStory.kiranSquareA) { crystal += 1265; tickets += 1; }
+                    if (this.mainStory.kiranSquareB) { crystal += 1230; tickets += 1; }
+                    if (this.mainStory.carnivalA) { crystal += 1230; tickets += 1; }
+                    if (this.mainStory.carnivalB) { crystal += 935; tickets += 1; }
+                    if (this.mainStory.refugeeCampA) { crystal += 1125; tickets += 1; }
+                    if (this.mainStory.refugeeCampB) { crystal += 1195; tickets += 1; }
+                    if (this.mainStory.muddyDarkTrapA) { crystal += 1230; tickets += 1; }
+                    if (this.mainStory.muddyDarkTrapB) { crystal += 605; tickets += 1; }
+                    if (this.mainStory.highTowerBlackRing) { crystal += 1980; tickets += 2; }
+                    if (this.mainStory.darkSurgeA) { crystal += 1005; tickets += 1; }
+                    if (this.mainStory.darkSurgeB) { crystal += 1005; tickets += 1; }
+                    if (this.mainStory.goldFeastA) { crystal += 900; tickets += 1; }
+                    if (this.mainStory.goldFeastB) { crystal += 1180; tickets += 1; }
                     
                     return {
                         crystal,
                         tickets,
                         total: crystal + (tickets * 180)
                     };
+                },
+
+                actionSummaryText() {
+                    if (this.actionSummaryLevel >= 19) {
+                        return "已完成全部行动纪要";
+                    }
+                    return this.actionSummaryList[this.actionSummaryLevel] || "01·混沌彼岸";
                 },
 
                 // 狄斯暗影（EX）奖励计算
@@ -2711,13 +3094,6 @@
 
                 // 角色养成模块奖励计算
                 characterDevelopmentRewards() {
-                    if (!this.modules.characterDevelopment) {
-                        return {
-                            crystal: 0,
-                            total: 0
-                        };
-                    }
-                    
                     let crystal = 0;
                     
                     crystal += this.characterDevelopment.tier3 * 180;
@@ -2749,20 +3125,23 @@
                 
                 totalCrystalIncome() {
                     return this.dailyActiveTotal + 
-                           this.totalWeeklyActive + 
-                           this.totalDarkZone +
-                           this.totalDarkZoneFirst +
-                           this.totalEmotionDetection +
-                           this.totalDailyShare +
-                           (this.totalTrackingExchange * 180) +
-                           (this.totalFriendshipExchange * 180) +
-                           this.totalTrackingCertification +
-                           this.trainingRewards.total +
-                           this.nightmareTotalRewards.total +
-                           this.dataGapRewards +
-                           this.totalNewModuleRewards;
-                },
-                
+                        this.totalWeeklyActive + 
+                        this.totalDarkZone +
+                        this.totalDarkZoneFirst +
+                        this.totalEmotionDetection +
+                        this.totalDailyShare +
+                        (this.totalTrackingExchange * 180) +
+                        (this.totalFriendshipExchange * 180) +
+                        this.totalTrackingCertification +
+                        this.trainingRewards.total +
+                        this.nightmareTotalRewards.total +
+                        this.dataGapRewards +
+                        this.totalNewModuleRewards +
+                        this.monthlyCardCrystal +           // 添加月卡异方晶
+                        this.actionSummaryCrystal +          // 添加行动纪要异方晶
+                        this.rechargeInspectionOrderCrystal + // 添加氪金监察密令异方晶
+                        (this.disiActive ? this.disiRewardTotal : 0); // 添加狄斯盈满钵异方晶（仅在激活时）
+                },                
                 totalSkinReserve() {
                     return (this.skinReserve.skin880 * 880) + 
                            (this.skinReserve.skin1280 * 1280) + 
@@ -2774,7 +3153,10 @@
                     const premiumCrystal = this.usePremiumCrystal ? (this.resources.premiumCrystal || 0) : 0;
                     const tickets = this.resources.tickets || 0;
                     
-                    const availableCrystal = crystal + premiumCrystal - this.totalSkinReserve + this.customAdjustment;
+                    // 添加月卡璀璨晶源到可用资源中
+                    const monthlyCardPremiumCrystal = this.monthlyCardPremiumCrystal;
+                    
+                    const availableCrystal = crystal + (premiumCrystal + monthlyCardPremiumCrystal) - this.totalSkinReserve + this.customAdjustment;
                     const crystalPulls = Math.floor(Math.max(0, availableCrystal) / 180);
                     return crystalPulls + tickets;
                 },
@@ -2784,7 +3166,10 @@
                     const premiumCrystal = this.usePremiumCrystal ? (this.resources.premiumCrystal || 0) : 0;
                     const tickets = this.resources.tickets || 0;
                     
-                    return crystal + premiumCrystal + (tickets * 180) + this.totalCrystalIncome - this.totalSkinReserve + this.customAdjustment;
+                    // 添加月卡璀璨晶源到可用资源中
+                    const monthlyCardPremiumCrystal = this.monthlyCardPremiumCrystal;
+                    
+                    return crystal + (premiumCrystal + monthlyCardPremiumCrystal) + (tickets * 180) + this.totalCrystalIncome - this.totalSkinReserve + this.customAdjustment;
                 },
                 
                 additionalPulls() {
@@ -2801,19 +3186,326 @@
                     
                     return baseCrystal + totalIncome + this.customAdjustment;
                 },
+
+                // 璀璨晶源总计（包含狄斯盈满钵的璀璨晶源）
+                totalPremiumCrystalSummary() {
+                    const basePremiumCrystal = this.resources.premiumCrystal || 0;
+                    const monthlyCardPremium = this.monthlyCardPremiumCrystal;
+                    const disiPremium = this.disiPremiumCrystal;
+                    
+                    return basePremiumCrystal + monthlyCardPremium + disiPremium - this.totalSkinReserve;
+                },
                 
                 totalTicketsSummary() {
                     const baseTickets = this.resources.tickets || 0;
                     const additionalTickets = this.totalTrackingExchange + 
-                                             this.totalFriendshipExchange + 
-                                             this.totalEmotionDetectionTickets +
-                                             this.totalTrackingCertificationTickets +
-                                             this.trainingRewards.tickets +
-                                             this.nightmareTotalRewards.tickets +
-                                             this.mainStoryRewards.tickets;
+                                            this.totalFriendshipExchange + 
+                                            this.totalEmotionDetectionTickets +
+                                            this.totalTrackingCertificationTickets +
+                                            this.trainingRewards.tickets +
+                                            this.nightmareTotalRewards.tickets +
+                                            this.mainStoryRewards.tickets +
+                                            this.dailyInspectionOrderTickets +  // 添加日常积累监察密令搜索令
+                                            this.rechargeInspectionOrderTickets + // 添加氪金监察密令搜索令
+                                            this.treasureTickets; // 添加诡珑珍宝馆搜索令
                     
                     return baseTickets + additionalTickets;
-                }
+                },
+
+                monthlyCardPremiumCrystal() {
+                    if (!this.monthlyCardActive) return 0;
+                    
+                    // -1表示提前购买，璀璨晶源为0；0及以上按正常计算
+                    if (this.monthlyCardCount === -1) return 0;
+                    
+                    // 基础月卡给300，每额外购买1张月卡额外给300
+                    const baseCard = 1; // 基础月卡
+                    const additionalCards = Math.max(0, this.monthlyCardCount); // 额外购买的月卡数量
+                    
+                    return (baseCard + additionalCards) * 300;
+                },
+
+                monthlyCardCrystal() {
+                    if (!this.monthlyCardActive) return 0;
+                    
+                    const days = this.selectedDays;
+                    const crystalPerDay = 60;
+                    
+                    // 计算总月卡天数
+                    let totalCardDays = 0;
+                    
+                    if (this.monthlyCardCount === -1) {
+                        // -1：提前购买，有1张月卡30天
+                        totalCardDays = 30;
+                    } else if (this.monthlyCardCount >= 0) {
+                        // 0：购买1张月卡30天，1：购买2张月卡60天，以此类推
+                        totalCardDays = 30 * (this.monthlyCardCount + 1);
+                    }
+                    
+                    // 实际可用的月卡天数不能超过剩余天数
+                    const actualCardDays = Math.min(totalCardDays, days);
+                    
+                    return actualCardDays * crystalPerDay;
+                },
+
+                monthlyCardCost() {
+                    if (!this.monthlyCardActive) return 0;
+                    
+                    // -1表示提前购买，不算入氪金金额
+                    if (this.monthlyCardCount === -1) return 0;
+                    
+                    // 0表示购买1张，1表示购买2张，以此类推
+                    const totalCards = this.monthlyCardCount + 1;
+                    return totalCards * 30; // 每张月卡30RMB
+                },
+
+                inspectionOrderCost() {
+                    if (!this.inspectionOrderActive) return 0;
+                    
+                    // -1表示提前购买，不算入氪金金额
+                    if (this.inspectionOrderCount === -1) return 0;
+                    
+                    // 0表示购买1期，1表示购买2期，以此类推
+                    const totalPeriods = this.inspectionOrderCount + 1;
+                    return totalPeriods * 68; // 每期68RMB
+                },
+
+                disiCost() {
+                    // 只有当按钮激活且未预先购买时才计入98RMB
+                    if (this.disiActive && !this.disiPrePurchased) {
+                        return 98;
+                    }
+                    return 0;
+                },
+
+                treasureCost() {
+                    // 只有当按钮激活且未预先购买时才计入88RMB
+                    if (this.treasureActive && !this.treasurePrePurchased) {
+                        return 88;
+                    }
+                    return 0;
+                },            
+
+                totalRechargeCost() {
+                    return this.monthlyCardCost + this.inspectionOrderCost + this.disiCost + this.treasureCost;
+                },
+
+                inspectionOrderCrystal() {
+                    // 如果滑块在55级，代表本期奖励已领完，只计算过往期数
+                    if (this.inspectionOrderLevel >= 55) {
+                        const periods = this.calculateInspectionPeriods - 1;
+                        const totalPerPeriod = 200 + 680; // 每期总共880异方晶
+                        return periods * totalPerPeriod;
+                    }
+                    
+                    // 日常积累模块中的监察密令只计算异方晶和搜索令，不计算RMB
+                    let crystal = 0;
+                    // 计算大于当前等级的奖励（本期剩余奖励）
+                    if (this.inspectionOrderLevel < 30) crystal += 200;
+                    if (this.inspectionOrderLevel < 50) crystal += 680;
+                    
+                    // 总奖励 = 本期剩余奖励 + (期数-1) * 每期总奖励
+                    const periods = this.calculateInspectionPeriods;
+                    const totalPerPeriod = 200 + 680; // 每期总共880异方晶
+                    
+                    return crystal + (periods - 1) * totalPerPeriod;
+                },
+
+                inspectionOrderTickets() {
+                    // 如果滑块在55级，代表本期奖励已领完，只计算过往期数
+                    if (this.inspectionOrderLevel >= 55) {
+                        const periods = this.calculateInspectionPeriods - 1;
+                        const totalPerPeriod = 6; // 每期总共6搜索令
+                        return periods * totalPerPeriod;
+                    }
+                    
+                    // 日常积累模块中的监察密令只计算异方晶和搜索令，不计算RMB
+                    let tickets = 0;
+                    const levels = [5, 15, 25, 35, 45, 55];
+                    
+                    // 计算大于当前等级的奖励（本期剩余奖励）
+                    for (const level of levels) {
+                        if (this.inspectionOrderLevel < level) {
+                            tickets += 1; // 日常积累模块固定为普通监察密令，每级1张
+                        }
+                    }
+                    
+                    // 总奖励 = 本期剩余奖励 + (期数-1) * 每期总奖励
+                    const periods = this.calculateInspectionPeriods;
+                    const totalPerPeriod = 6; // 每期总共6搜索令
+                    
+                    return tickets + (periods - 1) * totalPerPeriod;
+                },
+
+                inspectionOrderCost() {
+                    if (!this.inspectionOrderActive) return 0;
+                    
+                    // 负数代表已提前购买，不算入氪金金额
+                    if (this.inspectionOrderCount < 0) return 0;
+                    
+                    // 基础1期 + 额外购买期数
+                    const totalPeriods = 1 + Math.max(0, this.inspectionOrderCount);
+                    return totalPeriods * 68;
+                },
+
+                rechargeInspectionOrderCrystal() {
+                    if (!this.inspectionOrderActive) return 0;
+                    
+                    // 直接计算总期数，避免方法调用
+                    const basePeriods = 1;
+                    const additionalPeriods = Math.max(0, this.inspectionOrderCount);
+                    const totalPeriods = basePeriods + additionalPeriods;
+                    
+                    // 每期880异方晶
+                    return totalPeriods * 880;
+                },
+
+                rechargeInspectionOrderTickets() {
+                    if (!this.inspectionOrderActive) return 0;
+                    
+                    // 直接计算总期数，避免方法调用
+                    const basePeriods = 1;
+                    const additionalPeriods = Math.max(0, this.inspectionOrderCount);
+                    const totalPeriods = basePeriods + additionalPeriods;
+                    
+                    // 每期6搜索令
+                    return totalPeriods * 6;
+                },
+
+                // 高级监察密令异方晶数量计算
+                inspectionOrderCrystalAmount() {
+                    if (!this.inspectionOrderActive) return 0;
+                    
+                    // 计算总期数
+                    const basePeriods = 1; // 基础1期
+                    const additionalPeriods = Math.max(0, this.inspectionOrderCount); // 额外购买期数
+                    const totalPeriods = basePeriods + additionalPeriods;
+                    
+                    // 每期880异方晶
+                    return totalPeriods * 880;
+                },
+
+                // 高级监察密令搜索令数量计算
+                inspectionOrderTicketAmount() {
+                    if (!this.inspectionOrderActive) return 0;
+                    
+                    // 计算总期数
+                    const basePeriods = 1; // 基础1期
+                    const additionalPeriods = Math.max(0, this.inspectionOrderCount); // 额外购买期数
+                    const totalPeriods = basePeriods + additionalPeriods;
+                    
+                    // 每期6搜索令
+                    return totalPeriods * 6;
+                },
+
+                calculateInspectionPeriods() {
+                    // 监察密令固定周期计算：每6周1期
+                    // 当前期：10.6-11.17，下一期：11.17-12.29
+                    
+                    const today = new Date();
+                    const versionDate = this.selectedTime === 'nextVersion' 
+                        ? new Date(2025, 10, 20)  // 2025年11月20日
+                        : new Date(2026, 1, 17);  // 2026年2月17日
+                    
+                    // 密令开始日期（当前周期开始）
+                    const firstOrderStart = new Date(2025, 9, 6); // 2025年10月6日
+                    
+                    // 计算从第一个密令开始到目标日期的周数
+                    const diffTime = versionDate - firstOrderStart;
+                    const diffWeeks = Math.ceil(diffTime / (1000 * 60 * 60 * 24 * 7));
+                    
+                    // 每6周为1期，计算期数（向上取整）
+                    const totalPeriods = Math.ceil(diffWeeks / 6);
+                    
+                    // 计算从今天到第一个密令开始的周数，确定当前期数
+                    const currentDiffTime = today - firstOrderStart;
+                    const currentDiffWeeks = Math.ceil(currentDiffTime / (1000 * 60 * 60 * 24 * 7));
+                    const currentPeriod = Math.ceil(currentDiffWeeks / 6);
+                    
+                    // 经历的期数 = 总期数 - 当前期 + 1
+                    const periods = totalPeriods - currentPeriod + 1;
+                    
+                    return Math.max(1, periods); // 至少1期
+                },
+                // 日常积累模块的异方晶计算
+                dailyInspectionOrderCrystal() {
+                    let crystal = 0;
+                    // 计算大于当前等级的奖励（本期剩余奖励）
+                    if (this.dailyInspectionOrderLevel < 30) crystal += 200;
+                    if (this.dailyInspectionOrderLevel < 50) crystal += 680;
+                    
+                    // 总奖励 = 本期剩余奖励 + (期数-1) * 每期总奖励
+                    const periods = this.calculateInspectionPeriods;
+                    const totalPerPeriod = 200 + 680; // 每期总共880异方晶
+                    
+                    return crystal + (periods - 1) * totalPerPeriod;
+                },
+
+                // 氪金模块的异方晶计算
+                rechargeInspectionOrderCrystal() {
+                    if (!this.inspectionOrderActive) return 0;
+                    
+                    // 直接计算总期数，避免方法调用
+                    const basePeriods = 1;
+                    const additionalPeriods = Math.max(0, this.inspectionOrderCount);
+                    const totalPeriods = basePeriods + additionalPeriods;
+                    
+                    // 每期880异方晶
+                    return totalPeriods * 880;
+                },
+
+                rechargeInspectionOrderTickets() {
+                    if (!this.inspectionOrderActive) return 0;
+                    
+                    // 直接计算总期数，避免方法调用
+                    const basePeriods = 1;
+                    const additionalPeriods = Math.max(0, this.inspectionOrderCount);
+                    const totalPeriods = basePeriods + additionalPeriods;
+                    
+                    // 每期6搜索令
+                    return totalPeriods * 6;
+                },
+
+                rechargeInspectionOrderCost() {  // 改名避免冲突
+                    if (!this.inspectionOrderActive) return 0;
+                    
+                    // 负数代表已提前购买，不算入氪金金额
+                    if (this.inspectionOrderCount < 0) return 0;
+                    
+                    // 基础1期 + 额外购买期数
+                    const totalPeriods = 1 + Math.max(0, this.inspectionOrderCount);
+                    return totalPeriods * 68;
+                },
+
+                // 狄斯盈满钵奖励计算
+                disiRewardTotal() {
+                    // 计算大于当前等级的所有奖励总和
+                    let total = 0;
+                    for (const reward of this.disiRewards) {
+                        if (reward.level <= this.disiLevel) {
+                            total += reward.crystal;
+                        }
+                    }
+                    return total;
+                },
+
+                // 狄斯盈满钵璀璨晶源计算
+                disiPremiumCrystal() {
+                    // 只有当按钮激活且未预先购买时才显示980
+                    if (this.disiActive && !this.disiPrePurchased) {
+                        return 980;
+                    }
+                    return 0;
+                },                
+
+                // 诡珑珍宝馆搜索令计算
+                treasureTickets() {
+                    // 只有当按钮激活时才显示10搜索令
+                    if (this.treasureActive) {
+                        return 10;
+                    }
+                    return 0;
+                },
 
             },
             watch: {
@@ -2824,6 +3516,11 @@
                     deep: true
                 },
                 selectedTime() {
+                    // 当切换时间时，检查并调整高级监察密令购买数量
+                    const maxLimit = this.calculateInspectionPeriods - 1;
+                    if (this.inspectionOrderCount > maxLimit) {
+                        this.inspectionOrderCount = maxLimit;
+                    }
                     this.saveToLocalStorage();
                 },
                 calculateToPoolEnd() {
@@ -2933,13 +3630,49 @@
                     },
                     deep: true
                 },
-                // 模块开关的watch
-                modules: {
-                    handler(newValue) {
-                        this.saveToLocalStorage();
-                    },
-                    deep: true
-                }
+                monthlyCardCount() {
+                    this.saveToLocalStorage();
+                },
+                
+                monthlyCardActive() {
+                    this.saveToLocalStorage();
+                },
+
+                inspectionOrderActive() {
+                    this.saveToLocalStorage();
+                },
+                inspectionOrderCount() {
+                    this.saveToLocalStorage();
+                },
+
+                rechargeInspectionOrderLevel() {
+                    this.saveToLocalStorage();
+                },
+
+                actionSummaryLevel() {
+                    this.saveToLocalStorage();
+                },
+
+                disiLevel() {
+                    this.saveToLocalStorage();
+                },
+
+                disiActive() {
+                    this.saveToLocalStorage();
+                },
+
+                disiPrePurchased() {
+                    this.saveToLocalStorage();
+                },
+
+                treasureActive() {
+                    this.saveToLocalStorage();
+                },
+
+                treasurePrePurchased() {
+                    this.saveToLocalStorage();
+                },
+
             },
             methods: {
                 saveToLocalStorage() {
@@ -2973,12 +3706,29 @@
                         palmaRuins: this.palmaRuins,
                         // 角色养成模块数据保存
                         characterDevelopment: this.characterDevelopment,
-                        // 模块开关数据保存
-                        modules: this.modules
+                        monthlyCardCount: this.monthlyCardCount,
+                        monthlyCardActive: this.monthlyCardActive,
+                        // ✅ 确保这一行存在！
+                        inspectionOrderActive: this.inspectionOrderActive,
+                        inspectionOrderLevel: this.inspectionOrderLevel,
+                        actionSummaryLevel: this.actionSummaryLevel,
+                        inspectionOrderCount: this.inspectionOrderCount,
+                        dailyInspectionOrderLevel: this.dailyInspectionOrderLevel,
+                        rechargeInspectionOrderLevel: this.rechargeInspectionOrderLevel,
+                        disiLevel: this.disiLevel,  // 添加狄斯盈满钵等级
+                        disiActive: this.disiActive, // 添加狄斯盈满钵激活状态
+                        disiPrePurchased: this.disiPrePurchased, // 添加狄斯盈满钵预购买
+                        treasureActive: this.treasureActive, // 添加诡珑珍宝馆激活状态
+                        treasurePrePurchased: this.treasurePrePurchased, // 添加诡珑珍宝馆预购买状态
                     };
-                    localStorage.setItem('gachaCalculatorData', JSON.stringify(dataToSave));
+                    
+                    try {
+                        localStorage.setItem('gachaCalculatorData', JSON.stringify(dataToSave));
+                    } catch (e) {
+                        console.error('保存数据失败:', e);
+                    }
                 },
-                
+
                 toggleSection(section) {
                     this.sections[section] = !this.sections[section];
                 },
@@ -2992,11 +3742,14 @@
                         }
                     }
                 },
-                
-                adjustCertificationCount(change) {
-                    const newValue = this.trackingCertificationCount + change;
-                    if (newValue >= 0) {
-                        this.trackingCertificationCount = newValue;
+
+                validateCertificationInput() {
+                    // 确保值为整数且非负数
+                    if (this.trackingCertificationCount < 0) {
+                        this.trackingCertificationCount = 0;
+                    }
+                    if (this.trackingCertificationCount !== null && this.trackingCertificationCount !== undefined) {
+                        this.trackingCertificationCount = Math.floor(this.trackingCertificationCount);
                     }
                 },
                 
@@ -3040,7 +3793,11 @@
                 },
                 
                 adjustCharacterDev(type, change) {
-                    const newValue = this.characterDevelopment[type] + change;
+                    // 确保当前值是数字类型
+                    const currentValue = Number(this.characterDevelopment[type]) || 0;
+                    const newValue = currentValue + change;
+                    
+                    // 确保新值不小于0
                     if (newValue >= 0) {
                         this.characterDevelopment[type] = newValue;
                     }
@@ -3072,9 +3829,148 @@
                     if (this.resources[type] !== null && this.resources[type] !== undefined) {
                         this.resources[type] = Math.floor(this.resources[type]);
                     }
-                }
+                },
+                
+                adjustMonthlyCard(change) {
+                    const newValue = this.monthlyCardCount + change;
+                    
+                    // 检查是否从5增加到6
+                    if (this.monthlyCardCount === 5 && change === 1) {
+                        this.showAutoCloseAlert("剩余有效日期>150天时将无法继续购买月卡");
+                        return;
+                    }
+                    
+                    // 限制只能在-1到5之间（现在允许到5）
+                    if (newValue >= -1 && newValue <= 5) {
+                        this.monthlyCardCount = newValue;
+                    }
+                },
+
+                showAutoCloseAlert(message) {
+                    // 创建提示元素
+                    const alertDiv = document.createElement('div');
+                    alertDiv.style.cssText = `
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        background: rgba(0, 0, 0, 0.8);
+                        color: white;
+                        padding: 15px 25px;
+                        border-radius: 8px;
+                        z-index: 10000;
+                        font-size: 14px;
+                        text-align: center;
+                    `;
+                    alertDiv.textContent = message;
+                    
+                    // 添加到页面
+                    document.body.appendChild(alertDiv);
+                    
+                    // 3秒后自动移除
+                    setTimeout(() => {
+                        if (alertDiv.parentNode) {
+                            alertDiv.parentNode.removeChild(alertDiv);
+                        }
+                    }, 3000);
+                },
+
+                toggleMonthlyCard() {
+                    this.monthlyCardActive = !this.monthlyCardActive;
+                },
+
+                // 高级监察密令额外购买按钮限制：
+                adjustInspectionOrder(change) {
+                    const newValue = this.inspectionOrderCount + change;
+                    
+                    // 上限为经历期数-1
+                    const maxLimit = this.calculateInspectionPeriods - 1;
+                    
+                    // 检查是否达到上限
+                    if (newValue > maxLimit) {
+                        this.showAutoCloseAlert(`指定时间内仅经历${maxLimit + 1}期监察密令`);
+                        return;
+                    }
+                    
+                    // 限制在-1到maxLimit之间
+                    if (newValue >= -1 && newValue <= maxLimit) {
+                        this.inspectionOrderCount = newValue;
+                    }
+                },
+
+                toggleInspectionOrder() {
+                    this.inspectionOrderActive = !this.inspectionOrderActive;
+                },
+
+                calculateDisplayDays(timeType) {
+                    const baseDays = timeType === 'nextVersion' ? this.daysToNextVersion : this.daysToNewYear;
+                    return this.calculateToPoolEnd ? baseDays + (this.versionWeeks * 7) : baseDays;
+                },
+
+                // 狄斯盈满钵滑块吸附到指定挡位
+                snapDisiLevel() {
+                    const levels = [0, 5, 10, 15, 20, 25, 30, 35, 40, 42, 44, 46, 48, 50];
+                    let closestLevel = levels[0];
+                    let minDiff = Math.abs(this.disiLevel - levels[0]);
+                    
+                    for (let i = 1; i < levels.length; i++) {
+                        const diff = Math.abs(this.disiLevel - levels[i]);
+                        if (diff < minDiff) {
+                            minDiff = diff;
+                            closestLevel = levels[i];
+                        }
+                    }
+                    
+                    // 只有当当前值不等于最接近的挡位时才更新
+                    if (this.disiLevel !== closestLevel) {
+                        this.disiLevel = closestLevel;
+                    }
+                },
+
+                // 切换狄斯盈满钵激活状态
+                toggleDisi() {
+                    this.disiActive = !this.disiActive;
+                    // 如果关闭按钮，重置滑块到0级
+                    if (!this.disiActive) {
+                        this.disiLevel = 0;
+                        this.disiPrePurchased = false;
+                    }
+                },
+
+                // 切换诡珑珍宝馆激活状态
+                toggleTreasure() {
+                    this.treasureActive = !this.treasureActive;
+                    // 如果关闭按钮，关闭预购买
+                    if (!this.treasureActive) {
+                        this.treasurePrePurchased = false;
+                    }
+                },                
+
             }
-        }).mount('#app');
+        })
+
+        // 添加错误处理
+        try {
+            app.mount('#app');
+        } catch (error) {
+            console.error('页面加载失败:', error);
+            // 显示简单错误信息
+            document.getElementById('app').innerHTML = `
+                <div style="padding: 20px; text-align: center;">
+                    <h2>⚠️ 页面加载遇到问题</h2>
+                    <p>请尝试：</p>
+                    <button onclick="localStorage.removeItem('gachaCalculatorData'); location.reload();" 
+                            style="padding: 10px; margin: 5px; background: #1890ff; color: white; border: none; border-radius: 5px;">
+                        清除数据并刷新
+                    </button>
+                    <button onclick="location.reload()" 
+                            style="padding: 10px; margin: 5px; background: #ccc; border: none; border-radius: 5px;">
+                        直接刷新
+                    </button>
+                </div>
+            `;
+        }
+
     </script>
 </body>
 </html>
